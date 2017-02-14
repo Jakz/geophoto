@@ -35,6 +35,7 @@ public class NominatimReverseGeocodingJAPI {
 	private final String NominatimInstance = "http://nominatim.openstreetmap.org"; 
 
 	private int zoomLevel = 18;
+	private String locale = "en-us";
 		
 	public static void main(String[] args){
 		if(args.length < 1){
@@ -125,7 +126,7 @@ public class NominatimReverseGeocodingJAPI {
 		}				
 	}
 	
-	public NominatimReverseGeocodingJAPI(){}
+	public NominatimReverseGeocodingJAPI() { }
 	
 	public NominatimReverseGeocodingJAPI(int zoomLevel){
 		if(zoomLevel < 0 || zoomLevel > 18){
@@ -138,7 +139,7 @@ public class NominatimReverseGeocodingJAPI {
 	
 	public Address getAdress(double lat, double lon){
 		Address result = null;		
-		String urlString = NominatimInstance + "/reverse?format=json&addressdetails=1&lat=" + String.valueOf(lat) + "&lon=" + String.valueOf(lon) + "&zoom=" + zoomLevel ;
+		String urlString = NominatimInstance + "/reverse?format=json&addressdetails=1&lat=" + String.valueOf(lat) + "&lon=" + String.valueOf(lon) + "&zoom=" + zoomLevel + "&accept-language=" + locale;
 		try {
 			result =new Address(getJSON(urlString), zoomLevel);
 		} catch (IOException e) {
