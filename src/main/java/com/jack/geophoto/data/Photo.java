@@ -5,8 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-public class Photo
+public class Photo implements Comparable<Photo>
 {
+  private String name;
   private Path path;
   private Coordinate coordinate;
   private Size size;
@@ -17,6 +18,18 @@ public class Photo
       throw new NoSuchFileException(path.toString());
     
     this.path = path;
+    this.name = path.getFileName().toString();
+  }
+  
+  @Override
+  public int compareTo(Photo o) {
+    return name.compareToIgnoreCase(o.name);
+  }
+  
+  @Override
+  public int hashCode()
+  {
+    return path.hashCode();
   }
   
   public void coordinate(Coordinate coord) { this.coordinate = coord; }
