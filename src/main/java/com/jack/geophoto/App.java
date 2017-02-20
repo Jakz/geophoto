@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import com.jack.geophoto.cache.ThumbnailCache;
 import com.jack.geophoto.data.Coordinate;
 import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.data.PhotoFolder;
@@ -51,25 +52,16 @@ public class App
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
+      PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/Data/Photos/Organized/Vacanze/Cina '16"/*"./photos"*/));
       
       folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
       
       UI.init(folder);
       
-      ImageMagick im = new ImageMagick(8);
-
       folder.forEach(StreamException.rethrowConsumer(photo -> {
-        im.createThumbnail(photo, new Size(40,40), StreamException.rethrowBiConsumer((p,i) -> {
-          // ImageIO.write(i, "JPG", new File("./thumb-java.jpg"));
-          p.thumbnails().tiny().setImage(i);
-          
-          SwingUtilities.invokeLater(() -> UI.photoTable.refreshData());        
-        }));
+
       }));
       
-      im.waitForAllTasks();
-
       /*if (true)
         return;
       

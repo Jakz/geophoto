@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -11,11 +13,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import com.jack.geophoto.cache.Thumbnail;
+import com.jack.geophoto.cache.ThumbnailSize;
 import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.data.PhotoEnumeration;
+import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
 
@@ -29,20 +35,22 @@ public class PhotoTable extends JPanel
   public PhotoTable(PhotoEnumeration photos)
   {
     table = new JTable();
-    model = new TableModel<>(table, photos);
-    
     scrollPane = new JScrollPane(table);
+    model = new TableModel<>(table, scrollPane, photos);
+    
     scrollPane.setPreferredSize(new Dimension(400,800));
     
-    table.setRowHeight(60);
+    table.setRowHeight(90);
+    
+    final BiConsumer<Photo, Thumbnail> thumbnailLoadedCallback = (p, t) -> SwingUtilities.invokeLater(() -> UI.photoTable.refreshData());
         
     ColumnSpec<Photo, ImageIcon> thumbnailColumn = new ColumnSpec<>(
        "",
        ImageIcon.class,
-       p -> { 
-         BufferedImage i = p.thumbnails().tiny().image();
-         return i != null ? new ImageIcon(i) : null;
-       },
+       StreamException.rethrowFunction(p -> { 
+         Thumbnail thumbnail = p.thumbnails().asyncGet(ThumbnailSize.TINY, thumbnailLoadedCallback);
+         return thumbnail != null ? new ImageIcon(thumbnail.image()) : null;
+       }),
        null
     );
     
@@ -57,6 +65,7 @@ public class PhotoTable extends JPanel
         
         if (value != null)
           label.setIcon((ImageIcon)value);
+        else label.setIcon(null);
         
         return label;
       }

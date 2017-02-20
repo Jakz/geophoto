@@ -22,6 +22,7 @@ import org.im4java.process.ProcessExecutor;
 import org.im4java.process.ProcessTask;
 
 import com.jack.geophoto.Log;
+import com.jack.geophoto.cache.Thumbnail;
 import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.data.Size;
 
@@ -57,7 +58,7 @@ public class ImageMagick
     pool.submit(task);
   }
   
-  public void createThumbnail(Photo photo, Size size, BiConsumer<Photo, BufferedImage> callback) throws IM4JavaException, InterruptedException, IOException
+  public void createThumbnail(Photo photo, Size size, BiConsumer<Photo, Thumbnail> callback) throws IM4JavaException, InterruptedException, IOException
   { 
     ConvertCmd command = convert();
     
@@ -93,9 +94,8 @@ public class ImageMagick
     operation.format("jpg");
     operation.addImage();
         
-    System.out.println("Starting to convert: "+operation);
+    System.out.println("ImageMagick command: convert "+operation);
     submit(null, operation, photo.path().toString(), output.toString());
-    System.out.println("Finished"); 
   }
   
   public void waitForAllTasks() throws InterruptedException
@@ -108,9 +108,9 @@ public class ImageMagick
   {
     private final Photo photo;
     private final Stream2BufferedImage stream;
-    private final BiConsumer<Photo, BufferedImage> consumer;
+    private final BiConsumer<Photo, Thumbnail> consumer;
     
-    MemoryThumbnailGenerationListener(Photo photo, Stream2BufferedImage stream, BiConsumer<Photo, BufferedImage> consumer)
+    MemoryThumbnailGenerationListener(Photo photo, Stream2BufferedImage stream, BiConsumer<Photo, Thumbnail> consumer)
     {
       this.photo = photo;
       this.stream = stream;
@@ -132,8 +132,21 @@ public class ImageMagick
     @Override
     public void processTerminated(ProcessEvent e)
     {      
-      if (e.getReturnCode() == 0)
-        consumer.accept(photo, stream.getImage());
+      try
+      {
+        if (e.getException() != null)
+          throw e.getException();
+      
+        if (e.getReturnCode() == 0)
+        {
+          Thumbnail thumbnail = new Thumbnail(stream.getImage());
+          consumer.accept(photo, thumbnail);
+        }
+      }
+      catch (Exception ee)
+      {
+        ee.printStackTrace();
+      }
     }
     
   }

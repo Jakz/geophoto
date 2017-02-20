@@ -5,14 +5,19 @@ import java.awt.image.BufferedImage;
 public class Thumbnail
 {
   private BufferedImage image;
-  
-  Thumbnail()
+    
+  public Thumbnail(BufferedImage image)
   {
-    this.image = null;
+    this.image = image;
   }
-  
+
   boolean isPresent() { return image != null; }
   
-  public void setImage(BufferedImage image) { this.image = image; }
+  public void setImage(BufferedImage image)
+  { 
+    this.image = image; 
+  }
+  
   public BufferedImage image() { return image; }
+
 }
