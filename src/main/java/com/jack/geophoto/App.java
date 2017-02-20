@@ -1,6 +1,7 @@
 package com.jack.geophoto;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import com.jack.geophoto.data.Coordinate;
@@ -17,8 +19,12 @@ import com.jack.geophoto.data.PhotoFolder;
 import com.jack.geophoto.data.Size;
 import com.jack.geophoto.reverse.Address;
 import com.jack.geophoto.reverse.NominatimReverseGeocodingJAPI;
-import com.jack.geophoto.tools.ExifToolBridge;
+import com.jack.geophoto.tools.Exif;
 import com.jack.geophoto.tools.ImageMagick;
+import com.jack.geophoto.ui.PhotoTable;
+import com.jack.geophoto.ui.UI;
+import com.pixbits.lib.functional.StreamException;
+import com.pixbits.lib.ui.UIUtils;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.events.ConsoleEvent;
 import com.teamdev.jxbrowser.chromium.events.ConsoleListener;
@@ -33,10 +39,12 @@ public class App
   static Browser browser;
   
   public static void main( String[] args )
-  {
-    ExifToolBridge exif = new ExifToolBridge();
+  {    
+    UIUtils.setNimbusLNF();
+    System.setProperty("exiftool.debug", "true");
     
-    Photo photo = null;
+    //Exif exif = new Exif(5);
+    
     try
     {
       /*Coordinate c1 = new Coordinate(50.0359, -5.4253);
@@ -44,25 +52,48 @@ public class App
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
       PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
-      folder.findAllImages().forEach(p ->{
-        System.out.println(p.toString());
-      });
       
-      if (true)
+      folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
+      
+      UI.init(folder);
+      
+      ImageMagick im = new ImageMagick(8);
+
+      folder.forEach(StreamException.rethrowConsumer(photo -> {
+        im.createThumbnail(photo, new Size(40,40), StreamException.rethrowBiConsumer((p,i) -> {
+          // ImageIO.write(i, "JPG", new File("./thumb-java.jpg"));
+          p.thumbnails().tiny().setImage(i);
+          
+          SwingUtilities.invokeLater(() -> UI.photoTable.refreshData());        
+        }));
+      }));
+      
+      im.waitForAllTasks();
+
+      /*if (true)
         return;
       
+      folder.findAllImages().forEach(p ->{
+        try
+        {
+          Coordinate coord = exif.loadCoordinate(new Photo(p));
+          System.out.println(coord);
+          
+          if (coord.isValid())
+          {
+            NominatimReverseGeocodingJAPI reverse = new NominatimReverseGeocodingJAPI();
+            Address address = reverse.getAdress(coord.lat(), coord.lng());
+            System.out.println(address.getCountry()+", "+address.getCity());
+          }
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
+      });*/
       
-      photo = new Photo(Paths.get("./photos/P8191700.JPG"));
-      photo.coordinate(exif.loadCoordinate(photo));
-      
-      ImageMagick im = new ImageMagick();
-      
-      BufferedImage img = im.createThumbnail(photo, new Size(400,200));
-      
-      ImageIO.write(img, "JPG", new File("./thumb-java.jpg"));
-      
-      System.out.println(img);
-      
+      //exif.dispose();
+
       //im.createThumbnail(photo, new Size(400,200), Paths.get("./thumb.jpg"));
     }
     catch (Exception e)
@@ -85,7 +116,7 @@ public class App
     
     browser.addConsoleListener(e -> System.out.println("Message: " + e.getMessage()));
     
-    try
+    /*try
     {
       URL url = frame.getClass().getResource("/com/jack/geophoto/html/map.html");
       String path = new File(url.toURI()).getAbsolutePath();
@@ -105,7 +136,7 @@ public class App
     catch (Exception e)
     {
       e.printStackTrace();
-    }
+    }*/
   }
   
   static void executeJavaScript(String script)

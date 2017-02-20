@@ -5,12 +5,16 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
+import com.jack.geophoto.cache.ThumbnailSet;
+
 public class Photo implements Comparable<Photo>
 {
   private String name;
   private Path path;
   private Coordinate coordinate;
   private Size size;
+  
+  private ThumbnailSet thumbnails;
   
   public Photo(Path path) throws NoSuchFileException
   {
@@ -19,6 +23,7 @@ public class Photo implements Comparable<Photo>
     
     this.path = path;
     this.name = path.getFileName().toString();
+    this.thumbnails = new ThumbnailSet(this);
   }
   
   @Override
@@ -37,4 +42,6 @@ public class Photo implements Comparable<Photo>
   public Path path() { return path; }
   public File file() { return path.toFile(); }
   public Coordinate coordinate() { return coordinate; }
+  
+  public ThumbnailSet thumbnails() { return thumbnails; }
 }
