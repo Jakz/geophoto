@@ -2,9 +2,9 @@ package com.jack.geophoto.data;
 
 import java.util.Iterator;
 
-import com.pixbits.lib.ui.table.TableDataSource;
+import com.pixbits.lib.ui.table.DataSource;
 
-public interface PhotoEnumeration extends TableDataSource<Photo>
+public interface PhotoEnumeration extends DataSource<Photo>
 {
   @Override int size();
   @Override Photo get(int index);

@@ -2,6 +2,10 @@ package com.jack.geophoto.data;
 
 import java.util.Optional;
 
+import com.jack.geophoto.tools.ExifResult;
+import com.teamdev.jxmaps.LatLng;
+import com.thebuzzmedia.exiftool.core.StandardTag;
+
 public class Coordinate
 {
   private double latitude;
@@ -19,6 +23,28 @@ public class Coordinate
     this.longitude = lng;
     this.altitude = alt;
   }
+  
+  public static Coordinate parse(ExifResult v)
+  {
+    if (!v.has(StandardTag.GPS_LATITUDE) || !v.has(StandardTag.GPS_LONGITUDE))
+      return Coordinate.UNKNOWN;
+    else
+    {
+      if (v.has(StandardTag.GPS_ALTITUDE))
+        return new Coordinate(
+            v.get(StandardTag.GPS_LATITUDE),
+            v.get(StandardTag.GPS_LONGITUDE),
+            v.get(StandardTag.GPS_ALTITUDE)
+        );
+      else
+        return new Coordinate(
+            v.get(StandardTag.GPS_LATITUDE),
+            v.get(StandardTag.GPS_LONGITUDE)
+        );             
+    }
+  }
+  
+  public LatLng toLatLng() { return new LatLng(latitude, longitude); }
   
   public boolean isValid() { return true; }
   

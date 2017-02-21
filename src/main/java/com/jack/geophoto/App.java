@@ -26,10 +26,12 @@ import com.jack.geophoto.ui.PhotoTable;
 import com.jack.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.UIUtils;
+import com.pixbits.lib.util.ShutdownManager;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.events.ConsoleEvent;
 import com.teamdev.jxbrowser.chromium.events.ConsoleListener;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
+import com.thebuzzmedia.exiftool.core.StandardTag;
 
 /**
  * Hello world!
@@ -37,31 +39,46 @@ import com.teamdev.jxbrowser.chromium.swing.BrowserView;
  */
 public class App 
 {
+  static ShutdownManager shutdown;
+  
   static Browser browser;
   
   public static void main( String[] args )
   {    
     UIUtils.setNimbusLNF();
-    System.setProperty("exiftool.debug", "true");
     
-    //Exif exif = new Exif(5);
-    
+    Exif exif = new Exif(5);
+    shutdown = new ShutdownManager(true);
+    shutdown.addTask(() -> { try { exif.dispose(); } catch (Exception e) { } });
+
+    //System.setProperty("exiftool.debug", "true");
+       
     try
     {
       /*Coordinate c1 = new Coordinate(50.0359, -5.4253);
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/Data/Photos/Organized/Vacanze/Cina '16"/*"./photos"*/));
+      PhotoFolder folder = new PhotoFolder(Paths.get(/*"/Volumes/Data/Photos/Organized/Vacanze/Cina '16"*/"./photos"));
       
       folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
+      folder.sort();
       
       UI.init(folder);
+
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
-
+        exif.asyncFetch(photo, (p, er) -> {
+          Coordinate coord = Coordinate.parse(er);
+          p.coordinate(Coordinate.parse(er));
+          if (coord.isValid())
+            UI.map.addMarker(coord);
+          UI.photoTable.refreshData();
+            
+          
+        }, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
       }));
-      
+
       /*if (true)
         return;
       
@@ -95,55 +112,5 @@ public class App
     
     if (true)
       return;
-
-    browser = new Browser();
-    BrowserView view = new BrowserView(browser);
-
-    JFrame frame = new JFrame("JxBrowser Google Maps");
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.add(view, BorderLayout.CENTER);
-    frame.setSize(1280, 800);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-    
-    browser.addConsoleListener(e -> System.out.println("Message: " + e.getMessage()));
-    
-    /*try
-    {
-      URL url = frame.getClass().getResource("/com/jack/geophoto/html/map.html");
-      String path = new File(url.toURI()).getAbsolutePath();
-      System.out.println("URL: "+path);
-      browser.loadURL(url.toString());
-      
-      // 43.771389f,11.254167f
-      
-      Thread.sleep(1000);
-      addMarker(photo.coordinate());
-      
-      NominatimReverseGeocodingJAPI reverse = new NominatimReverseGeocodingJAPI();
-      Address address = reverse.getAdress(photo.coordinate().lat(), photo.coordinate().lng());
-      System.out.println(address.getCountry()+", "+address.getCity());
-      
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }*/
-  }
-  
-  static void executeJavaScript(String script)
-  {
-    System.out.println("Executing JS:\n"+script+"\n");
-    browser.executeJavaScript(script);
-  }
-  
-  static void addMarker(Coordinate coordinate)
-  {
-    executeJavaScript(
-      "var marker = new google.maps.Marker({ " +
-      "position: { lat: " + coordinate.lat() + ", lng: " + coordinate.lng() + "}," +
-      "map: map });"
-    );
-    
   }
 }

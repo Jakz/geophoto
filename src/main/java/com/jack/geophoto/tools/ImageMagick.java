@@ -77,9 +77,8 @@ public class ImageMagick
     command.addProcessEventListener(new MemoryThumbnailGenerationListener(photo, stream, callback));
 
     
-    System.out.println("Starting to convert: "+operation);
+    Log.d("imagick", "executing 'convert %s'", operation /*operation.toString().replaceAll("\\?img\\?", photo.path().getFileName().toString())*/);
     submit(command, operation, photo.path().toString());
-    System.out.println("Finished");
   }
   
   public void createThumbnail(Photo photo, Size size, Path output) throws IM4JavaException, InterruptedException, IOException
@@ -94,7 +93,7 @@ public class ImageMagick
     operation.format("jpg");
     operation.addImage();
         
-    System.out.println("ImageMagick command: convert "+operation);
+    Log.d("imagick", "executing 'convert %s'", operation);
     submit(null, operation, photo.path().toString(), output.toString());
   }
   

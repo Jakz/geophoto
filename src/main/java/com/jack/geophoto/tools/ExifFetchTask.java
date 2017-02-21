@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import com.jack.geophoto.Log;
 import com.jack.geophoto.data.Photo;
 import com.thebuzzmedia.exiftool.Tag;
 
@@ -23,6 +24,7 @@ public class ExifFetchTask implements Callable<ExifResult>
   @Override
   public ExifResult call() throws Exception
   {
+    Log.d("exiftool", "executing ' exiftool...'");
     Map<Tag, String> values = exif.getTool().getImageMeta(photo.file(), Arrays.asList(tags));
     return new ExifResult(values);
   }

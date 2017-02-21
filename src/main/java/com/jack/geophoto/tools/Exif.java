@@ -7,6 +7,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.BiConsumer;
 
 import com.jack.geophoto.data.Coordinate;
 import com.jack.geophoto.data.Photo;
@@ -37,35 +38,35 @@ public class Exif
     exifTool.close();
   }
   
+  public void close() throws Exception
+  {
+    pool.shutdown();
+    exifTool.close();
+  }
+  
   protected <T> Future<T> asyncFetch(Callable<T> task)
   {
     return pool.submit(task);
+  }
+  
+  public void asyncFetch(Photo photo, BiConsumer<Photo, ExifResult> callback, Tag... tags)
+  {
+    ExifFetchTask task = new ExifFetchTask(photo, this, tags);
+    ExifConsumeTask ctask = new ExifConsumeTask(photo, task, callback);
+    pool.submit(ctask);
+  }
+  
+  public void asyncFetch(Photo photo, BiConsumer<Photo, ExifResult> process, BiConsumer<Photo, ExifResult> after, Tag... tags)
+  {
+    asyncFetch(photo, process.andThen(after), tags);
   }
  
   public Coordinate loadCoordinate(Photo photo) throws IOException
   {
     ExifFetchTask task = new ExifFetchTask(photo, this, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
-    DerivedTask<ExifResult, Coordinate> dtask = new DerivedTask<>(task, v -> {
-      if (!v.has(StandardTag.GPS_LATITUDE) || !v.has(StandardTag.GPS_LONGITUDE))
-        return Coordinate.UNKNOWN;
-      else
-      {
-        if (v.has(StandardTag.GPS_ALTITUDE))
-          return new Coordinate(
-              v.get(StandardTag.GPS_LATITUDE),
-              v.get(StandardTag.GPS_LONGITUDE),
-              v.get(StandardTag.GPS_ALTITUDE)
-          );
-        else
-          return new Coordinate(
-              v.get(StandardTag.GPS_LATITUDE),
-              v.get(StandardTag.GPS_LONGITUDE)
-          );             
-      }
-    });
-    
+    DerivedTask<ExifResult, Coordinate> dtask = new DerivedTask<>(task, v -> Coordinate.parse(v));
     Future<Coordinate> coord = asyncFetch(dtask);
-
+    
     try
     {
       return coord.get();
