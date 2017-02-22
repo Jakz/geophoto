@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.gpx.GpxTrackSegment;
 import com.jack.geophoto.gpx.GpxWaypoint;
 import com.pixbits.lib.ui.table.ColumnSpec;

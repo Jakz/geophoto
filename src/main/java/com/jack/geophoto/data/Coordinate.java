@@ -1,10 +1,7 @@
 package com.jack.geophoto.data;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-
 import com.jack.geophoto.tools.ExifResult;
 import com.pixbits.lib.util.PixMath;
 import com.teamdev.jxmaps.LatLng;

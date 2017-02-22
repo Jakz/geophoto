@@ -2,14 +2,12 @@ package com.jack.geophoto.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
@@ -19,21 +17,17 @@ import org.xml.sax.SAXException;
 
 import com.jack.geophoto.data.Bounds;
 import com.jack.geophoto.data.Coordinate;
-import com.jack.geophoto.data.Point;
 import com.jack.geophoto.gpx.Gpx;
 import com.jack.geophoto.gpx.GpxParser;
 import com.jack.geophoto.gpx.GpxTrackSegment;
 import com.jack.geophoto.ui.map.GpsTrackLine;
 import com.teamdev.jxmaps.ControlPosition;
 import com.teamdev.jxmaps.LatLng;
-import com.teamdev.jxmaps.LatLngBounds;
 import com.teamdev.jxmaps.Map;
 import com.teamdev.jxmaps.MapOptions;
 import com.teamdev.jxmaps.MapStatus;
 import com.teamdev.jxmaps.MapTypeControlOptions;
 import com.teamdev.jxmaps.MapViewOptions;
-import com.teamdev.jxmaps.Rectangle;
-import com.teamdev.jxmaps.RectangleOptions;
 import com.teamdev.jxmaps.swing.MapView;
 
 public class MapPanel extends JPanel
@@ -80,7 +74,7 @@ public class MapPanel extends JPanel
         Gpx gpx;
         try
         {
-          gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
+          gpx = GpxParser.parse(Paths.get("./photos/gpx1.gpx"));
           GpxTrackSegment segment = gpx.tracks().get(0).segments().get(0);
           UI.gpxTrackTable.setSegment(segment);
           GpsTrackLine line = new GpsTrackLine(segment, map);

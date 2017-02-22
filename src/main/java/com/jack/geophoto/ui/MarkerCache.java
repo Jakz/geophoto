@@ -1,9 +1,7 @@
 package com.jack.geophoto.ui;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,9 +45,9 @@ public class MarkerCache
   public static class ID
   {
     private final MarkerCache cache;
-    private final Marker marker;
+    private final Marker<?> marker;
     
-    private ID(MarkerCache cache, Marker marker)
+    private ID(MarkerCache cache, Marker<?> marker)
     {
       this.cache = cache;
       this.marker = marker;

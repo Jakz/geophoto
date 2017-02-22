@@ -1,15 +1,9 @@
 package com.jack.geophoto.ui;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.swing.event.ListSelectionListener;
-
 import com.jack.geophoto.data.Photo;
 import com.pixbits.lib.ui.table.DataSource;
 import com.pixbits.lib.ui.table.ManagedListSelectionListener;
-import com.pixbits.lib.ui.table.SimpleListSelectionListener;
 
 public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
 {

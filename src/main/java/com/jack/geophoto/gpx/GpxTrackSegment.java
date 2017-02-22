@@ -3,8 +3,6 @@ package com.jack.geophoto.gpx;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-
 import com.pixbits.lib.ui.table.DataSource;
 
 public class GpxTrackSegment implements DataSource<GpxWaypoint>

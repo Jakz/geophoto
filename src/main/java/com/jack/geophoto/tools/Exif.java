@@ -1,8 +1,6 @@
 package com.jack.geophoto.tools;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -15,10 +13,6 @@ import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
-import com.thebuzzmedia.exiftool.exceptions.UnsupportedFeatureException;
-
-import static java.util.Arrays.asList;
-
 import java.io.IOException;
 
 public class Exif

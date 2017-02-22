@@ -3,10 +3,7 @@ package com.jack.geophoto.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,7 +20,6 @@ import com.jack.geophoto.cache.ThumbnailSize;
 import com.jack.geophoto.data.Coordinate;
 import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.data.PhotoEnumeration;
-import com.jack.geophoto.tools.ExifResult;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;

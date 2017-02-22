@@ -1,37 +1,10 @@
 package com.jack.geophoto;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
-
-import com.google.zxing.NotFoundException;
-import com.jack.geophoto.cache.ThumbnailCache;
 import com.jack.geophoto.data.Coordinate;
 import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.data.PhotoFolder;
-import com.jack.geophoto.data.Size;
-import com.jack.geophoto.gpx.Gpx;
-import com.jack.geophoto.gpx.GpxParser;
-import com.jack.geophoto.gpx.GpxTrackSegment;
-import com.jack.geophoto.reverse.Address;
-import com.jack.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.jack.geophoto.tools.Exif;
-import com.jack.geophoto.tools.ImageMagick;
-import com.jack.geophoto.tools.ZXing;
-import com.jack.geophoto.ui.PhotoTable;
 import com.jack.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.UIUtils;

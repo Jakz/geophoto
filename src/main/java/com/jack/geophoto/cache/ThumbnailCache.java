@@ -1,6 +1,5 @@
 package com.jack.geophoto.cache;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
