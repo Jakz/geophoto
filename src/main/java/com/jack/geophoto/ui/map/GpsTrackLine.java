@@ -8,6 +8,8 @@ import com.jack.geophoto.gpx.GpxTrackSegment;
 import com.jack.geophoto.gpx.GpxWaypoint;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.Map;
+import com.teamdev.jxmaps.MapMouseEvent;
+import com.teamdev.jxmaps.MouseEvent;
 import com.teamdev.jxmaps.Polyline;
 import com.teamdev.jxmaps.PolylineOptions;
 
@@ -35,6 +37,16 @@ public class GpsTrackLine extends Polyline implements Positionable
     options.setStrokeOpacity(1.0);
     options.setStrokeWeight(2.0);
     setOptions(options);
+    
+    this.addEventListener("click", new MapMouseEvent() {
+      @Override public void onEvent(MouseEvent event) { onClick(event); }
+    });
+  }
+  
+  private void onClick(MouseEvent event)
+  {
+    Coordinate coordinate = new Coordinate(event.latLng());
+    Coordinate nearest = findNearestPointTo(coordinate);
   }
   
   public Map map() { return map; }

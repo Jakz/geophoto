@@ -55,4 +55,12 @@ public interface Positionable
 
     return zoom;
   }
+  
+  default Coordinate findNearestPointTo(Coordinate coordinate)
+  {
+    Collection<Coordinate> coordinates = coordinates();
+    return coordinates.stream()
+      .min((c1,c2) -> Double.compare(c1.haversineDistance(coordinate), c2.haversineDistance(coordinate)))
+      .get();
+  }
 }

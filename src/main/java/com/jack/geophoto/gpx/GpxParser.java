@@ -16,11 +16,13 @@ public class GpxParser extends XMLHandler<Gpx>
   GpxTrack track;
   GpxTrackSegment segment;
   GpxWaypoint waypoint;
+  boolean stillInHeader;
 
   @Override
   protected void init()
   {
     gpx = new Gpx();
+    stillInHeader = true;
   }
   
   @Override
@@ -38,7 +40,6 @@ public class GpxParser extends XMLHandler<Gpx>
       double latitude = this.getDoubleAttribute("lat", d -> d >= -90.f && d < 90.0f);
       double longitude = this.getDoubleAttribute("lon", d -> d >= -180.f && d < 180.0f);
       waypoint.coordinate = new Coordinate(latitude, longitude);
-      System.out.println("parsed coordinate "+waypoint.coordinate);
     }
     
   }
@@ -52,6 +53,10 @@ public class GpxParser extends XMLHandler<Gpx>
       track.segments.add(segment);
     else if (name.equals("trk"))
       gpx.tracks.add(track);
+    else if (name.equals("time") && !stillInHeader)
+      waypoint.time = asZonedDateTime();
+    else if (name.equals("metadata"))
+      stillInHeader = false;
   }
 
   @Override
