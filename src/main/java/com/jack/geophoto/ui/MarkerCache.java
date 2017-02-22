@@ -2,58 +2,47 @@ package com.jack.geophoto.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.jack.geophoto.data.Coordinate;
-import com.teamdev.jxmaps.Marker;
 
 public class MarkerCache
 { 
   private final com.teamdev.jxmaps.Map map;
-  private final List<Marker> markers;
-  private final Map<Object, Marker> markersMap;
-  
+  private final Set<Marker<?>> markers;
+  private final Map<Object, Marker<?>> markersMap;
+
   MarkerCache(com.teamdev.jxmaps.Map map)
   {
     this.map = map;
-    this.markers = new ArrayList<>();
+    this.markers = new HashSet<>();
     this.markersMap = new HashMap<>(); 
   }
   
-  public void addMarker(Object ref, Coordinate position)
+  public <T extends MarkerSource> void addMarker(T owner, Coordinate position)
   {
-    Marker marker = new Marker(map);
-    marker.setPosition(position.toLatLng());
-    markersMap.put(ref, marker);
+    Marker<T> marker = new Marker<>(map, position, owner);
+    markers.add(marker);
+    markersMap.put(owner, marker);
   }
   
-  public void addOrphanMarker(Coordinate position)
+  public void addMarker(Coordinate position)
   {
-    System.out.println("adding marker at "+position);
-    
-    Marker marker = new Marker(map);
-    marker.setPosition(position.toLatLng());
+    Marker<?> marker = new Marker<>(map, position);
     markers.add(marker);
   }
-  
-  public void clearAllMarkers()
-  {
-    clearMappedMarkers();
-    clearOrphanMarkers();
-  }
-  
-  public void clearMappedMarkers()
-  {
-    markersMap.forEach((k,m) -> m.remove());
-    markersMap.clear();
-  }
-  
-  public void clearOrphanMarkers()
+
+  public void clearMarkers()
   {
     markers.forEach(m -> m.remove());
     markers.clear();
+    markersMap.clear();
   }
+
+  public Set<Marker<?>> markers() { return markers; }
   
   public static class ID
   {

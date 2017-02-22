@@ -6,8 +6,9 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import com.jack.geophoto.cache.ThumbnailSet;
+import com.jack.geophoto.ui.MarkerSource;
 
-public class Photo implements Comparable<Photo>
+public class Photo implements Comparable<Photo>, MarkerSource
 {
   private String name;
   private Path path;

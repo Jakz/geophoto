@@ -3,35 +3,41 @@ package com.jack.geophoto;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import com.google.zxing.NotFoundException;
 import com.jack.geophoto.cache.ThumbnailCache;
 import com.jack.geophoto.data.Coordinate;
 import com.jack.geophoto.data.Photo;
 import com.jack.geophoto.data.PhotoFolder;
 import com.jack.geophoto.data.Size;
+import com.jack.geophoto.gpx.Gpx;
+import com.jack.geophoto.gpx.GpxParser;
+import com.jack.geophoto.gpx.GpxTrackSegment;
 import com.jack.geophoto.reverse.Address;
 import com.jack.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.jack.geophoto.tools.Exif;
 import com.jack.geophoto.tools.ImageMagick;
+import com.jack.geophoto.tools.ZXing;
 import com.jack.geophoto.ui.PhotoTable;
 import com.jack.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.UIUtils;
 import com.pixbits.lib.util.ShutdownManager;
-import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.events.ConsoleEvent;
-import com.teamdev.jxbrowser.chromium.events.ConsoleListener;
-import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 import com.thebuzzmedia.exiftool.core.StandardTag;
+
 
 /**
  * Hello world!
@@ -40,12 +46,30 @@ import com.thebuzzmedia.exiftool.core.StandardTag;
 public class App 
 {
   static ShutdownManager shutdown;
-  
-  static Browser browser;
-  
+      
   public static void main( String[] args )
   {    
     UIUtils.setNimbusLNF();
+    
+    /*Path qr = Paths.get("/Volumes/Vicky/Photos-SSD/GPX/Cina '16/qr/10-1/P8100623.JPG");
+    try
+    {
+      byte[] data = ZXing.readQRCode(qr);
+      Path out = Paths.get("./qrcode.bin");
+      DataOutputStream dos = new DataOutputStream(Files.newOutputStream(out));
+      dos.write(data);
+      dos.close();
+    } 
+    catch (NotFoundException | IOException e1)
+    {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    
+    
+    if (true)
+      return;*/
+    
     
     Exif exif = new Exif(5);
     shutdown = new ShutdownManager(true);
@@ -54,12 +78,14 @@ public class App
     //System.setProperty("exiftool.debug", "true");
        
     try
-    {
+    {      
       /*Coordinate c1 = new Coordinate(50.0359, -5.4253);
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      PhotoFolder folder = new PhotoFolder(Paths.get(/*"/Volumes/Data/Photos/Organized/Vacanze/Cina '16"*/"./photos"));
+      //PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/Data/Photos/Organized/Vacanze/Normandia '17"));
+      PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
+
       
       folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
       folder.sort();

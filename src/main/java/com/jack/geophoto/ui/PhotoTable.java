@@ -28,8 +28,10 @@ import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
 
-public class PhotoTable extends JPanel
+public class PhotoTable extends JPanel implements MultiPhotoView
 {
+  PhotoEnumeration photos;
+  
   private final TableModel<Photo> model;
   
   private final JTable table;
@@ -49,6 +51,7 @@ public class PhotoTable extends JPanel
   
   public PhotoTable(PhotoEnumeration photos)
   {
+    this.photos = photos;
     table = new JTable();
     scrollPane = new JScrollPane(table);
     model = new TableModel<>(table, scrollPane, photos);
@@ -108,7 +111,7 @@ public class PhotoTable extends JPanel
         if (value != null)
         {
           Coordinate coordinate = (Coordinate)value;
-          label.setText(coordinate.isValid() ? String.format("%2.4fN, %2.4E", coordinate.lat(), coordinate.lng()) : "UNKNOWN");
+          label.setText(coordinate.isValid() ? String.format("%2.4f, %2.4f", coordinate.lat(), coordinate.lng()) : "UNKNOWN");
         }
         else
           label.setText("");
@@ -138,6 +141,14 @@ public class PhotoTable extends JPanel
   
   public void refreshData()
   {
-    model.fireTableDataChanged();
+    table.repaint();
+    //model.fireTableDataChanged();
+  }
+
+  @Override
+  public void selectPhoto(Photo photo)
+  {
+    int index = photos.indexOf(photo); 
+    table.setRowSelectionInterval(index, index);
   }
 }

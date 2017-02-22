@@ -1,8 +1,12 @@
 package com.jack.geophoto.data;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.jack.geophoto.tools.ExifResult;
+import com.pixbits.lib.util.PixMath;
 import com.teamdev.jxmaps.LatLng;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 
@@ -11,6 +15,13 @@ public class Coordinate
   private double latitude;
   private double longitude;
   private double altitude;
+  
+  public Coordinate(Coordinate other)
+  {
+    this.latitude = other.latitude;
+    this.longitude = other.longitude;
+    this.altitude = other.altitude;
+  }
   
   public Coordinate(double lat, double lng)
   {
@@ -23,6 +34,15 @@ public class Coordinate
     this.longitude = lng;
     this.altitude = alt;
   }
+  
+  public Coordinate(LatLng latLng)
+  {
+    this.latitude = latLng.getLat();
+    this.longitude = latLng.getLng();
+  }
+  
+  void setLat(double lat) { this.latitude = lat; }
+  void setLng(double lng) { this.longitude = lng; }
   
   public static Coordinate parse(ExifResult v)
   {
@@ -92,15 +112,41 @@ public class Coordinate
     if (o instanceof Coordinate)
     {
       Coordinate c = (Coordinate)o;     
-      return c != Coordinate.UNKNOWN && c.latitude == latitude && c.longitude == longitude;
+      return c != Coordinate.UNKNOWN && 
+          PixMath.areEquivalent(c.latitude, latitude) && 
+          PixMath.areEquivalent(c.longitude, longitude);
     }
     else
       return false;
+  }
+  
+  @Override public int hashCode()
+  {
+    return Objects.hash(latitude, longitude);
   }
   
   @Override
   public String toString()
   {
     return String.format("{ %2.4f, %2.4f }", latitude, longitude);
+  }
+  
+  public static Coordinate computeCenterOfGravity(Collection<Coordinate> coords)
+  {
+    Point average = coords.stream()
+      .map(c -> new Point(Math.toRadians(c.lat()), Math.toRadians(c.lng())))
+      .map(p -> new Point(Math.cos(p.x)*Math.cos(p.y), Math.cos(p.x)*Math.sin(p.y), Math.sin(p.x)))
+      .reduce((p1, p2) -> p1.sum(p2)).get();
+      
+    average = average.divide(coords.size());
+    
+    double lon = Math.atan2(average.y, average.x);
+    double hyp = Math.sqrt((average.x*average.x) + (average.y*average.y));
+    double lat = Math.atan2(average.z, hyp);
+    
+    lat = Math.toDegrees(lat);
+    lon = Math.toDegrees(lon);
+    
+    return new Coordinate(lat, lon);
   }
 }

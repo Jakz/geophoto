@@ -21,38 +21,34 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
   @Override
   protected void commonActionBefore()
   {
-    UI.map.markers().clearAllMarkers();
+    UI.map.markers().clearMarkers();
   }
   
   @Override
   protected void commonActionAfter()
   {
-    
+    UI.map.fitMarkers(UI.map.markers().markers());
   }
   
   @Override
   protected void clearSelection()
   {
-    System.out.println("Clear selection");
+
   }
   
   @Override
   protected void singleSelection(Photo photo)
   {
-    System.out.println("Selected: "+photo);
     if (photo.coordinate().isValid())
-      UI.map.markers().addOrphanMarker(photo.coordinate());
+      UI.map.markers().addMarker(photo, photo.coordinate());
   }
   
   @Override
   protected void multipleDataSelection(List<Photo> photos)
   {
-    String str = photos.stream().map(Object::toString).collect(Collectors.joining(", "));
-    System.out.println("Selected: "+str);
-    
     photos.forEach(photo -> { 
       if (photo.coordinate().isValid())
-        UI.map.markers().addOrphanMarker(photo.coordinate());
+        UI.map.markers().addMarker(photo, photo.coordinate());
     });
   }
 

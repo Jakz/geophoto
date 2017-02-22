@@ -82,10 +82,18 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
     return photos.iterator();
   }
   
+  @Override
+  public int indexOf(Photo object)
+  {
+    return photos.indexOf(object);
+  }
+  
   public void forEach(Consumer<? super Photo> consumer)
   {
     photos.forEach(consumer);
   }
+
+
 
 
 }

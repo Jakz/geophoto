@@ -24,4 +24,9 @@ public class UI
     mapFrame.setVisible(true);
     mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
+  
+  public static MultiPhotoView currentPhotoView() 
+  { 
+    return photoTable;
+  }
 }
