@@ -58,6 +58,9 @@ public class PhotoTable extends JPanel implements MultiPhotoView
     
     scrollPane.setPreferredSize(new Dimension(400,800));
     
+    setLayout(new BorderLayout());
+    add(scrollPane, BorderLayout.CENTER);
+    
     table.setRowHeight(90);
     table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     table.getSelectionModel().addListSelectionListener(new PhotoSelectionListener(photos));
@@ -69,8 +72,7 @@ public class PhotoTable extends JPanel implements MultiPhotoView
        StreamException.rethrowFunction(p -> { 
          Thumbnail thumbnail = p.thumbnails().asyncGet(ThumbnailSize.TINY, thumbnailLoadedCallback);
          return thumbnail != null ? new ImageIcon(thumbnail.image()) : null;
-       }),
-       null
+       })
     );
     
     TableCellRenderer thumbnailRenderer = new DefaultTableCellRenderer()
@@ -97,8 +99,7 @@ public class PhotoTable extends JPanel implements MultiPhotoView
     model.addColumn(new ColumnSpec<Photo, String>(
         "Filename",
         String.class,
-        p -> p.path().getFileName().toString(),
-        null
+        p -> p.path().getFileName().toString()
       ));
         
     /* gps coordinate */
@@ -126,17 +127,12 @@ public class PhotoTable extends JPanel implements MultiPhotoView
         StreamException.rethrowFunction(p -> { 
           Coordinate coord = p.coordinate();
           return coord;
-        }),
-        null
+        })
     );
     
     coordinateColumn.setRenderer(coordinateRenderer);
     
     model.addColumn(coordinateColumn);
-    
-    
-    setLayout(new BorderLayout());
-    add(scrollPane, BorderLayout.CENTER);
   }
   
   public void refreshData()

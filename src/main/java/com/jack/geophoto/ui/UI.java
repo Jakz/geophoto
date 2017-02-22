@@ -8,6 +8,7 @@ import com.pixbits.lib.ui.UIUtils;
 public class UI
 {
   public static PhotoTable photoTable;
+  public static GpxTrackTable gpxTrackTable;
   public static MapPanel map;
   
   public static void init(PhotoFolder folder)
@@ -23,6 +24,12 @@ public class UI
     JFrame mapFrame = UIUtils.buildFrame(map, "Map");
     mapFrame.setVisible(true);
     mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+    gpxTrackTable = new GpxTrackTable();
+    
+    JFrame gpxFrame = UIUtils.buildFrame(gpxTrackTable, "Gpx Tracks");
+    gpxFrame.setVisible(true);
+    gpxFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
   
   public static MultiPhotoView currentPhotoView() 
