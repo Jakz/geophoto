@@ -70,7 +70,12 @@ public class Coordinate
   
   private static final double EARTH_RADIUS = 6371e3;
   
-  public double haversineDistance(Coordinate other)
+  public double distance(Coordinate other)
+  {
+    return haversineDistance(other);
+  }
+  
+  private double haversineDistance(Coordinate other)
   {
     double fi1 = Math.toRadians(latitude);
     double fi2 = Math.toRadians(other.latitude);
@@ -86,7 +91,7 @@ public class Coordinate
     return (EARTH_RADIUS * c) / 1000.0;
   }
   
-  public double cosineDistance(Coordinate other)
+  private double cosineDistance(Coordinate other)
   {
     double fi1 = Math.toRadians(latitude);
     double fi2 = Math.toRadians(other.latitude);

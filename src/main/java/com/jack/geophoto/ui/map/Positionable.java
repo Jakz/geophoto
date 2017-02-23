@@ -60,7 +60,7 @@ public interface Positionable
   {
     Collection<Coordinate> coordinates = coordinates();
     return coordinates.stream()
-      .min((c1,c2) -> Double.compare(c1.haversineDistance(coordinate), c2.haversineDistance(coordinate)))
+      .min((c1,c2) -> Double.compare(c1.distance(coordinate), c2.distance(coordinate)))
       .get();
   }
 }

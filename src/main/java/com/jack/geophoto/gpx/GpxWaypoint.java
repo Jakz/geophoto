@@ -10,4 +10,5 @@ public class GpxWaypoint
   ZonedDateTime time;
   
   public Coordinate coordinate() { return coordinate; }
+  public ZonedDateTime time() { return time; }
 }

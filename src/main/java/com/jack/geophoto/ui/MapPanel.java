@@ -74,7 +74,7 @@ public class MapPanel extends JPanel
         Gpx gpx;
         try
         {
-          gpx = GpxParser.parse(Paths.get("./photos/gpx1.gpx"));
+          gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
           GpxTrackSegment segment = gpx.tracks().get(0).segments().get(0);
           UI.gpxTrackTable.setSegment(segment);
           GpsTrackLine line = new GpsTrackLine(segment, map);
