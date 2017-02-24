@@ -13,6 +13,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
+import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxTrack;
 import com.github.jakz.geophoto.gpx.GpxTrackSegment;
 import com.github.jakz.geophoto.ui.UI;
@@ -33,6 +34,7 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
     trackTree = new JTree();
     trackTree.setRootVisible(false);
     trackTree.addTreeSelectionListener(this);
+    trackTree.setCellRenderer(new GpxTreeNodeRenderer());
     
     root = new GpxRootTreeNode();
     model = new DefaultTreeModel(root);
@@ -48,9 +50,9 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
     setPreferredSize(new Dimension(300,600));
   }
   
-  public void setTracks(List<GpxTrack> tracks)
+  public void setTracks(List<Gpx> files)
   {
-    root.setTracks(tracks);
+    root.setFiles(files);
     model.reload(root);
     pane.setDividerLocation(0.3f);
   }

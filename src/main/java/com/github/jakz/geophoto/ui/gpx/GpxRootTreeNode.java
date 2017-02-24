@@ -9,36 +9,37 @@ import java.util.stream.Collectors;
 
 import javax.swing.tree.TreeNode;
 
+import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxTrack;
 
 public class GpxRootTreeNode implements TreeNode
 {
-  private List<GpxTrackTreeNode> tracks;
+  private List<GpxFileTreeNode> tracks;
   
   GpxRootTreeNode()
   {
     tracks = new ArrayList<>();
   }
   
-  GpxRootTreeNode(GpxTrack... tracks)
+  GpxRootTreeNode(Gpx... files)
   {
-    this(Arrays.asList(tracks));
+    this(Arrays.asList(files));
   }
   
-  GpxRootTreeNode(List<GpxTrack> tracks)
+  GpxRootTreeNode(List<Gpx> files)
   {
-    setTracks(tracks);  
+    setFiles(files);  
   }
   
-  GpxRootTreeNode(GpxTrackTreeNode... nodes)
+  GpxRootTreeNode(GpxFileTreeNode... nodes)
   {
     tracks = new ArrayList<>(Arrays.asList(nodes));
   }
   
-  public void setTracks(List<GpxTrack> tracks)
+  public void setFiles(List<Gpx> tracks)
   {
     this.tracks = tracks.stream()
-      .map(t -> new GpxTrackTreeNode(this, t))
+      .map(t -> new GpxFileTreeNode(this, t))
       .collect(Collectors.toList());  
   }
 

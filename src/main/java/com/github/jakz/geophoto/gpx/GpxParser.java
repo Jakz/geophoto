@@ -16,19 +16,21 @@ public class GpxParser extends XMLHandler<Gpx>
   GpxTrack track;
   GpxTrackSegment segment;
   GpxWaypoint waypoint;
-  boolean stillInHeader;
+  boolean inMetadata;
 
   @Override
   protected void init()
   {
     gpx = new Gpx();
-    stillInHeader = true;
+    inMetadata = false;
   }
   
   @Override
   protected void start(String name, Attributes attr)
   {
-    if (name.equals("gpx"))
+    if (name.equals("metadata"))
+      inMetadata = true;
+    else if (name.equals("gpx"))
       gpx = new Gpx();
     else if (name.equals("trk"))
       track = new GpxTrack();
@@ -47,16 +49,39 @@ public class GpxParser extends XMLHandler<Gpx>
   @Override
   protected void end(String name)
   {
-    if (name.equals("trkpt"))
+    if (name.equals("metadata"))
+      inMetadata = false;
+    else if (name.equals("trkpt"))
+    {
       segment.points.add(waypoint);
+      waypoint = null;
+    }
     else if (name.equals("trkseg"))
+    {
       track.segments.add(segment);
+      segment = null;
+    }
     else if (name.equals("trk"))
+    {
       gpx.tracks.add(track);
-    else if (name.equals("time") && !stillInHeader)
-      waypoint.time = asZonedDateTime();
-    else if (name.equals("metadata"))
-      stillInHeader = false;
+      track = null;
+    }
+    else if (name.equals("ele"))
+      waypoint.coordinate.setAlt(asDouble());
+    else if (name.equals("name"))
+    {
+      if (inMetadata)
+        gpx.name = asString();
+      else if (track != null)
+        track.name = asString();
+    }
+    else if (name.equals("time"))
+    {
+      if (inMetadata)
+        gpx.time = asZonedDateTime();
+      else
+        waypoint.time = asZonedDateTime();
+    }    
   }
 
   @Override

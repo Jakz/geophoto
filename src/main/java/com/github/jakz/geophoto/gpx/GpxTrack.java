@@ -18,4 +18,5 @@ public class GpxTrack
   }
   
   public List<GpxTrackSegment> segments() { return segments; }
+  public String name() { return name; }
 }

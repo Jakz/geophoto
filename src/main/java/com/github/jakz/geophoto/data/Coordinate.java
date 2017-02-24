@@ -38,8 +38,9 @@ public class Coordinate
     this.longitude = latLng.getLng();
   }
   
-  void setLat(double lat) { this.latitude = lat; }
-  void setLng(double lng) { this.longitude = lng; }
+  public void setLat(double lat) { this.latitude = lat; }
+  public void setLng(double lng) { this.longitude = lng; }
+  public void setAlt(double alt) { this.altitude = alt; }
   
   public static Coordinate parse(ExifResult v)
   {

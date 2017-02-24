@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class MapPanel extends JPanel
         try
         {
           gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
-          UI.gpxPanel.setTracks(gpx.tracks());          
+          UI.gpxPanel.setTracks(Arrays.asList(gpx));          
         } 
         catch (IOException | SAXException e)
         {
