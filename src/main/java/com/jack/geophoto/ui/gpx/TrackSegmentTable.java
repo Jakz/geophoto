@@ -1,4 +1,4 @@
-package com.jack.geophoto.ui;
+package com.jack.geophoto.ui.gpx;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -19,7 +19,7 @@ import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
 import com.pixbits.lib.util.TimeInterval;
 
-public class GpxTrackTable extends JPanel
+public class TrackSegmentTable extends JPanel
 {
   private GpxTrackSegment segment;
   
@@ -32,7 +32,7 @@ public class GpxTrackTable extends JPanel
   private final DistanceRenderer distanceRenderer;
 
   
-  public GpxTrackTable()
+  public TrackSegmentTable()
   {
     this.segment = null;
     table = new JTable();
@@ -84,7 +84,7 @@ public class GpxTrackTable extends JPanel
     model.addColumn(distanceSpec);
   }
   
-  void setSegment(GpxTrackSegment segment)
+  public void setSegment(GpxTrackSegment segment)
   {
     this.segment = segment;
     model.setData(segment);

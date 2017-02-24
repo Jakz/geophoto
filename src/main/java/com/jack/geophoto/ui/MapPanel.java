@@ -33,7 +33,7 @@ import com.teamdev.jxmaps.swing.MapView;
 public class MapPanel extends JPanel
 {
   private final MapView view;
-  private Map map;
+  public Map map; // TODO: should be private
   private MarkerCache markers;
   private boolean ready;
   
@@ -75,10 +75,7 @@ public class MapPanel extends JPanel
         try
         {
           gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
-          GpxTrackSegment segment = gpx.tracks().get(0).segments().get(0);
-          UI.gpxTrackTable.setSegment(segment);
-          GpsTrackLine line = new GpsTrackLine(segment, map);
-          line.centerAndFit();
+          UI.gpxPanel.setTracks(gpx.tracks());          
         } 
         catch (IOException | SAXException e)
         {
