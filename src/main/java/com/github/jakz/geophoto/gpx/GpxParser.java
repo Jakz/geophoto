@@ -9,79 +9,90 @@ import org.xml.sax.SAXException;
 import com.github.jakz.geophoto.data.Coordinate;
 import com.pixbits.lib.io.xml.XMLHandler;
 import com.pixbits.lib.io.xml.XMLParser;
+import com.pixbits.lib.io.xml.XMLScopedHandler;
 
-public class GpxParser extends XMLHandler<Gpx>
+public class GpxParser extends XMLScopedHandler<Gpx>
 {
   Gpx gpx;
   GpxTrack track;
   GpxTrackSegment segment;
   GpxWaypoint waypoint;
-  boolean inMetadata;
 
   @Override
   protected void init()
   {
     gpx = new Gpx();
-    inMetadata = false;
   }
   
   @Override
-  protected void start(String name, Attributes attr)
+  protected void start(String name, Attributes attr) throws SAXException
   {
-    if (name.equals("metadata"))
-      inMetadata = true;
-    else if (name.equals("gpx"))
-      gpx = new Gpx();
-    else if (name.equals("trk"))
-      track = new GpxTrack();
-    else if (name.equals("trkseg"))
-      segment = new GpxTrackSegment();
-    else if (name.equals("trkpt"))
+    switch (name)
     {
-      waypoint = new GpxWaypoint();
-      double latitude = this.getDoubleAttribute("lat", d -> d >= -90.f && d < 90.0f);
-      double longitude = this.getDoubleAttribute("lon", d -> d >= -180.f && d < 180.0f);
-      waypoint.coordinate = new Coordinate(latitude, longitude);
-    }
-    
+      case "gpx": gpx = new Gpx(); break;
+      case "trk": track = new GpxTrack(); break;
+      case "trkseg": segment = new GpxTrackSegment(); break;
+      case "trkpt":
+      {
+        waypoint = new GpxWaypoint();
+        double latitude = this.getDoubleAttribute("lat", d -> d >= -90.f && d < 90.0f);
+        double longitude = this.getDoubleAttribute("lon", d -> d >= -180.f && d < 180.0f);
+        waypoint.coordinate = new Coordinate(latitude, longitude);
+        break;
+      }
+    }  
   }
 
   @Override
-  protected void end(String name)
+  protected void end(String name) throws SAXException
   {
-    if (name.equals("metadata"))
-      inMetadata = false;
-    else if (name.equals("trkpt"))
+    switch (name)
     {
-      segment.points.add(waypoint);
-      waypoint = null;
-    }
-    else if (name.equals("trkseg"))
-    {
-      track.segments.add(segment);
-      segment = null;
-    }
-    else if (name.equals("trk"))
-    {
-      gpx.tracks.add(track);
-      track = null;
-    }
-    else if (name.equals("ele"))
-      waypoint.coordinate.setAlt(asDouble());
-    else if (name.equals("name"))
-    {
-      if (inMetadata)
-        gpx.name = asString();
-      else if (track != null)
-        track.name = asString();
-    }
-    else if (name.equals("time"))
-    {
-      if (inMetadata)
-        gpx.time = asZonedDateTime();
-      else
-        waypoint.time = asZonedDateTime();
-    }    
+      case "trkpt": 
+      {
+        segment.points.add(waypoint);
+        waypoint = null;
+        break;
+      }
+      case "trkseg":
+      {
+        track.segments.add(segment);
+        segment = null;
+        break;
+      }
+      case "trk":
+      {
+        gpx.tracks.add(track);
+        track = null;
+      }
+      case "ele":
+      {
+        assertCurrentScope("trkpt");
+        waypoint.coordinate.setAlt(asDouble());
+        break;
+      }
+      case "name":
+      {
+        if (isCurrentScope("metadata"))
+        {
+          gpx.name = asString();
+        }
+        else if (isCurrentScope("trk"))
+        {
+          track.name = asString();
+        }
+        
+        break;
+      }
+      case "time":
+      {
+        if (isCurrentScope("metadata"))
+          gpx.time = asZonedDateTime();
+        else if (isCurrentScope("trkpt"))
+          waypoint.time = asZonedDateTime();
+        break;
+      }
+    }   
   }
 
   @Override
