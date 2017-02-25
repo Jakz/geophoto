@@ -31,7 +31,7 @@ public class App
       
   public static void main( String[] args )
   {    
-    Gpx gpx;
+    /*Gpx gpx;
     try
     {
       gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));         
@@ -43,7 +43,7 @@ public class App
     }   
     
     if (true)
-      return;
+      return;*/
     
     
     UIUtils.setNimbusLNF();

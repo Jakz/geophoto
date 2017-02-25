@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import com.github.jakz.geophoto.data.PhotoFolder;
 import com.github.jakz.geophoto.ui.gpx.GpxPanel;
 import com.github.jakz.geophoto.ui.gpx.TrackSegmentTable;
+import com.github.jakz.geophoto.ui.map.MapElementCache;
 import com.pixbits.lib.ui.UIUtils;
 
 public class UI
@@ -12,6 +13,7 @@ public class UI
   public static PhotoTable photoTable;
   public static GpxPanel gpxPanel;
   public static MapPanel map;
+  public static MapElementCache mapCache;
   
   public static void init(PhotoFolder folder)
   {

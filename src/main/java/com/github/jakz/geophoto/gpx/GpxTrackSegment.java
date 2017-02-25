@@ -13,11 +13,14 @@ public class GpxTrackSegment implements DataSource<GpxWaypoint>
 {
   @XmlElement(name = "trkpt") List<GpxWaypoint> points;
   @XmlElement GpxExtension extensions;
+  
   private double[] distanceCache;
+  private double totalLength;
   
   GpxTrackSegment()
   {
     points = new ArrayList<>();
+    totalLength = Double.NaN;
   }
   
   public double distanceBetweenPoints(int index)
@@ -28,10 +31,22 @@ public class GpxTrackSegment implements DataSource<GpxWaypoint>
       Arrays.fill(distanceCache, Double.NaN);
     }
     
-    if (distanceCache[index] == Double.NaN)
+    if (Double.isNaN(distanceCache[index]))
       distanceCache[index] = points.get(index).coordinate.distance(points.get(index+1).coordinate);
     
     return distanceCache[index];
+  }
+  
+  public double totalLength()
+  {
+    if (!Double.isNaN(totalLength))
+      return totalLength;
+    
+    totalLength = 0.0;
+    for (int i = 0; i < points.size() - 1; ++i)
+      totalLength += distanceBetweenPoints(i);
+    
+    return totalLength;
   }
   
   public List<GpxWaypoint> points() { return points; }

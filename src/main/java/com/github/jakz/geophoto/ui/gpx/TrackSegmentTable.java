@@ -2,6 +2,7 @@ package com.github.jakz.geophoto.ui.gpx;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.time.ZonedDateTime;
 import java.time.format.FormatStyle;
 
@@ -38,6 +39,9 @@ public class TrackSegmentTable extends JPanel
     table = new JTable();
     scrollPane = new JScrollPane(table);
     model = new TableModel<>(table, scrollPane, segment);
+    
+    table.setFont(table.getFont().deriveFont(table.getFont().getSize()*0.75f));
+    table.getTableHeader().setFont(table.getFont().deriveFont(Font.BOLD));
     
     scrollPane.setPreferredSize(new Dimension(300,400));
     

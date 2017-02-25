@@ -1,5 +1,6 @@
 package com.github.jakz.geophoto.ui.gpx;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -12,22 +13,27 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxTrack;
 import com.github.jakz.geophoto.gpx.GpxTrackSegment;
+import com.pixbits.lib.ui.color.PleasantColorGenerator;
+import com.pixbits.lib.ui.color.SquareIconGenerator;
 import com.pixbits.lib.util.TimeInterval;
 
 public class GpxTreeNodeRenderer extends DefaultTreeCellRenderer
 {
   private final DateTimeFormatter formatter;
+  private final SquareIconGenerator iconGenerator;
   
   GpxTreeNodeRenderer()
   {
     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT);
+    iconGenerator = new SquareIconGenerator(new PleasantColorGenerator(), 10, 10, 1, Color.black);
   }
   
   @Override
   public Component getTreeCellRendererComponent(JTree tree, Object object, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus)
   {
-    JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, object, sel, expanded, leaf, row, hasFocus);
-
+    String text = "";
+    
+    setLeafIcon(getDefaultLeafIcon());
     
     if (object instanceof GpxFileTreeNode)
     {
@@ -37,7 +43,7 @@ public class GpxTreeNodeRenderer extends DefaultTreeCellRenderer
       String date = formatter.format(gpx.time());
       int trackCount = gpx.tracks().size();
       
-      label.setText(String.format("%s (%d %s) (%s)", title, trackCount, trackCount > 1 ? "tracks" : "track", date));
+      text = String.format("%s (%d %s) (%s)", title, trackCount, trackCount > 1 ? "tracks" : "track", date);
     }
     else if (object instanceof GpxTrackTreeNode)
     {
@@ -46,7 +52,7 @@ public class GpxTreeNodeRenderer extends DefaultTreeCellRenderer
       String title = track.name() != null ? track.name() : "Track";
       int segmentCount = track.segments().size();
       
-      label.setText(String.format("%s (%d %s)", title, segmentCount, segmentCount > 1 ? "segments" : "segment"));
+      text = String.format("%s (%d %s)", title, segmentCount, segmentCount > 1 ? "segments" : "segment");
     }
     else if (object instanceof GpxTrackSegmentTreeNode)
     {
@@ -62,11 +68,15 @@ public class GpxTreeNodeRenderer extends DefaultTreeCellRenderer
         duration = String.format("%02d:%02d:%02d", interval.hours(), interval.minutes(), interval.seconds());
       }
 
+      double length = segment.totalLength();
       int waypointCount = segment.points().size();
       
-      label.setText(String.format("%s (%d %s)", duration, waypointCount, waypointCount > 1 ? "waypoints" : "waypoint"));
+      text = String.format("%s (%d %s) (%.2fkm)", duration, waypointCount, waypointCount > 1 ? "waypoints" : "waypoint", length);
+      setLeafIcon(iconGenerator.generateIcon());
     }
     
+    JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, hasFocus);
+
     return label;
   }
 }

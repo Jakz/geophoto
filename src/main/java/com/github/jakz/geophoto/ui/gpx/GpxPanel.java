@@ -47,7 +47,7 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
     setLayout(new BorderLayout());
     add(pane, BorderLayout.CENTER);
     
-    setPreferredSize(new Dimension(300,600));
+    setPreferredSize(new Dimension(500,800));
   }
   
   public void setTracks(List<Gpx> files)
@@ -74,8 +74,12 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
       
       
       segmentTable.setSegment(segment);
-      GpsTrackLine line = new GpsTrackLine(segment, UI.map.map);
+      
+      UI.mapCache.hideAll();
+      GpsTrackLine line = UI.mapCache.getOrBuild(GpsTrackLine.class, segment);
+      line.setSegment(segment);
       line.centerAndFit();
+      line.show();
     }
     
   }

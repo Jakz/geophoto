@@ -1,6 +1,7 @@
 package com.github.jakz.geophoto.ui.map;
 
 import java.util.Collection;
+import java.util.stream.StreamSupport;
 
 import com.github.jakz.geophoto.data.Bounds;
 import com.github.jakz.geophoto.data.Coordinate;
@@ -9,11 +10,11 @@ import com.teamdev.jxmaps.Map;
 public interface Positionable
 {
   Map map();
-  Collection<Coordinate> coordinates();
+  Iterable<Coordinate> coordinates();
   
   default void centerAndFit()
   {
-    Collection<Coordinate> coordinates = coordinates();
+    Iterable<Coordinate> coordinates = coordinates();
     
     Coordinate center = Coordinate.computeCenterOfGravity(coordinates);
     map().setCenter(center.toLatLng());
@@ -33,7 +34,7 @@ public interface Positionable
     return Math.max(Math.min(radX2, Math.PI), -Math.PI) / 2;
   }
   
-  default double getBoundsZoomLevel(Collection<Coordinate> coords, float mwidth, float mheight)
+  default double getBoundsZoomLevel(Iterable<Coordinate> coords, float mwidth, float mheight)
   {
     final float width = 256, height = 256;
     final float zoomMax = 21;
@@ -58,8 +59,8 @@ public interface Positionable
   
   default Coordinate findNearestPointTo(Coordinate coordinate)
   {
-    Collection<Coordinate> coordinates = coordinates();
-    return coordinates.stream()
+    Iterable<Coordinate> coordinates = coordinates();
+    return StreamSupport.stream(coordinates.spliterator(), false)
       .min((c1,c2) -> Double.compare(c1.distance(coordinate), c2.distance(coordinate)))
       .get();
   }

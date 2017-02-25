@@ -2,6 +2,9 @@ package com.github.jakz.geophoto.data;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.StreamSupport;
+
 import com.github.jakz.geophoto.tools.ExifResult;
 import com.pixbits.lib.util.PixMath;
 import com.teamdev.jxmaps.LatLng;
@@ -135,14 +138,16 @@ public class Coordinate
     return String.format("{ %2.4f, %2.4f }", latitude, longitude);
   }
   
-  public static Coordinate computeCenterOfGravity(Collection<Coordinate> coords)
+  public static Coordinate computeCenterOfGravity(Iterable<Coordinate> coords)
   {
-    Point average = coords.stream()
+    final AtomicInteger count = new AtomicInteger();
+    Point average = StreamSupport.stream(coords.spliterator(), false)
       .map(c -> new Point(Math.toRadians(c.lat()), Math.toRadians(c.lng())))
       .map(p -> new Point(Math.cos(p.x)*Math.cos(p.y), Math.cos(p.x)*Math.sin(p.y), Math.sin(p.x)))
+      .map(p -> { count.incrementAndGet(); return p; })
       .reduce((p1, p2) -> p1.sum(p2)).get();
       
-    average = average.divide(coords.size());
+    average = average.divide(count.get());
     
     double lon = Math.atan2(average.y, average.x);
     double hyp = Math.sqrt((average.x*average.x) + (average.y*average.y));

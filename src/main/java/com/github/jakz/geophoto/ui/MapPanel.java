@@ -23,6 +23,7 @@ import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxParser;
 import com.github.jakz.geophoto.gpx.GpxTrackSegment;
 import com.github.jakz.geophoto.ui.map.GpsTrackLine;
+import com.github.jakz.geophoto.ui.map.MapElementCache;
 import com.teamdev.jxmaps.ControlPosition;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.Map;
@@ -65,6 +66,8 @@ public class MapPanel extends JPanel
         map.setCenter(new LatLng(35.91466, 10.312499));
         map.setZoom(10.0);
         
+        UI.mapCache = new MapElementCache(map);
+        
         ready = true;
         
         if (!unreadyBuffer.isEmpty())
@@ -82,7 +85,7 @@ public class MapPanel extends JPanel
         catch (IOException | SAXException | JAXBException e)
         {
           e.printStackTrace();
-        }       
+        }      
       }
     });
     

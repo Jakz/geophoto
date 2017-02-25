@@ -1,13 +1,11 @@
 package com.github.jakz.geophoto.data;
 
-import java.util.Collection;
-
 public class Bounds
 {
   private Coordinate ne;
   private Coordinate sw;
   
-  public Bounds(Collection<Coordinate> coords)
+  public Bounds(Iterable<Coordinate> coords)
   {
     coords.forEach(c -> updateBound(c));
   }
