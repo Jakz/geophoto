@@ -1,9 +1,18 @@
 package com.github.jakz.geophoto;
 
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
+
+import javax.xml.bind.JAXBException;
+
+import org.xml.sax.SAXException;
+
 import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoFolder;
+import com.github.jakz.geophoto.gpx.Gpx;
+import com.github.jakz.geophoto.gpx.GpxParser;
 import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
@@ -22,6 +31,21 @@ public class App
       
   public static void main( String[] args )
   {    
+    Gpx gpx;
+    try
+    {
+      gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));         
+      GpxParser.save(gpx, Paths.get("./photos/data-out.gpx"));
+    } 
+    catch (IOException | SAXException | JAXBException e)
+    {
+      e.printStackTrace();
+    }   
+    
+    if (true)
+      return;
+    
+    
     UIUtils.setNimbusLNF();
     
     /*Path qr = Paths.get("/Volumes/Vicky/Photos-SSD/GPX/Cina '16/qr/10-1/P8100623.JPG");

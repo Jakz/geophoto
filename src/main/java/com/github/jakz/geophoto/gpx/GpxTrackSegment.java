@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+
 import com.pixbits.lib.ui.table.DataSource;
 
 public class GpxTrackSegment implements DataSource<GpxWaypoint>
 {
-  List<GpxWaypoint> points;
+  @XmlElement(name = "trkpt") List<GpxWaypoint> points;
+  @XmlElement GpxExtension extensions;
   private double[] distanceCache;
   
   GpxTrackSegment()

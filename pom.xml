@@ -109,13 +109,10 @@
         </executions>
         <configuration>
           <sources>
-            <source>src/main/java/com/jack/geophoto/gpx/xsd/gpx.xsd</source>
+            <source>src/main/java/com/github/jakz/geophoto/gpx/xsd/gpx.xsd</source>
           </sources>
-          <xjbSources>
-            <xjbSource>src/main/java/com/jack/geophoto/gpx/xsd/gpx.xjb</xjbSource>
-          </xjbSources>
           <packageName>com.github.jakz.geophoto.gpx.pojo</packageName>
-          <generateDirectory>src/main/java/com/jack/geophoto/gpx/xsd</generateDirectory>
+          <generateDirectory>src/main/java/com/github/jakz/geophoto/gpx/xsd</generateDirectory>
         </configuration>
       </plugin><-->
     </plugins>

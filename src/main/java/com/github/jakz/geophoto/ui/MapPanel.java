@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.xml.bind.JAXBException;
 
 import org.xml.sax.SAXException;
 
@@ -78,7 +79,7 @@ public class MapPanel extends JPanel
           gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
           UI.gpxPanel.setTracks(Arrays.asList(gpx));          
         } 
-        catch (IOException | SAXException e)
+        catch (IOException | SAXException | JAXBException e)
         {
           e.printStackTrace();
         }       

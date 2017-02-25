@@ -68,6 +68,7 @@ public class Coordinate
   
   public double lat() { return latitude; }
   public double lng() { return longitude; }
+  public double alt() { return altitude; }
   
   private static final double EARTH_RADIUS = 6371e3;
   
