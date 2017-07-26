@@ -13,6 +13,8 @@ import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoFolder;
 import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxParser;
+import com.github.jakz.geophoto.reverse.GeocodeReverser;
+import com.github.jakz.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
@@ -89,13 +91,21 @@ public class App
       
       UI.init(folder);
 
+      GeocodeReverser reverser = new NominatimReverseGeocodingJAPI();
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         exif.asyncFetch(photo, (p, er) -> {
           Coordinate coord = Coordinate.parse(er);
           p.coordinate(Coordinate.parse(er));
           if (coord.isValid())
+          {
+            try {
+              p.reverseGeoCode(reverser);
+            }
+            catch (Exception e) { e.printStackTrace(); }
+            
             UI.map.addMarker(coord);
+          }
           UI.photoTable.refreshData();
             
           

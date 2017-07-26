@@ -24,6 +24,9 @@ import java.net.URLConnection;
 
 import org.apache.commons.io.IOUtils;
 
+import com.github.jakz.geophoto.data.Coordinate;
+import com.github.jakz.geophoto.data.Geocode;
+
 /**
  * Java library for reverse geocoding using Nominatim
  * 
@@ -31,7 +34,8 @@ import org.apache.commons.io.IOUtils;
  * @version 0.1
  *
  */
-public class NominatimReverseGeocodingJAPI {
+public class NominatimReverseGeocodingJAPI implements GeocodeReverser
+{
 	private final String NominatimInstance = "http://nominatim.openstreetmap.org"; 
 
 	private int zoomLevel = 18;
@@ -112,9 +116,10 @@ public class NominatimReverseGeocodingJAPI {
 				}
 			}
 			
-			if(latSet && lonSet){
+			if (latSet && lonSet)
+			{
 				NominatimReverseGeocodingJAPI nominatim = new NominatimReverseGeocodingJAPI(zoom);
-				Address address = nominatim.getAdress(lat, lon);
+				Address address = nominatim.getAddress(lat, lon);
 				System.out.println(address);
 				if(osm){
 					System.out.print("OSM type: " + address.getOsmType()+", OSM id: " + address.getOsmId());
@@ -137,11 +142,11 @@ public class NominatimReverseGeocodingJAPI {
 		this.zoomLevel = zoomLevel;
 	}
 	
-	public Address getAdress(double lat, double lon){
+	public Address getAddress(double lat, double lon){
 		Address result = null;		
 		String urlString = NominatimInstance + "/reverse?format=json&addressdetails=1&lat=" + String.valueOf(lat) + "&lon=" + String.valueOf(lon) + "&zoom=" + zoomLevel + "&accept-language=" + locale;
 		try {
-			result =new Address(getJSON(urlString), zoomLevel);
+			result = new Address(getJSON(urlString), zoomLevel);
 		} catch (IOException e) {
 			System.err.println("Can't connect to server.");
 			e.printStackTrace();
@@ -157,4 +162,11 @@ public class NominatimReverseGeocodingJAPI {
 		is.close();		
 		return json;
 	}
+
+  @Override
+  public Geocode reverse(Coordinate coordinate)
+  {
+    Address address = getAddress(coordinate.lat(), coordinate.lng());
+    return new Geocode(address);
+  }
 }

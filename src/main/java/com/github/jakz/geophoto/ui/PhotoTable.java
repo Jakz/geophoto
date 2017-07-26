@@ -18,8 +18,11 @@ import javax.swing.table.TableCellRenderer;
 import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.cache.ThumbnailSize;
 import com.github.jakz.geophoto.data.Coordinate;
+import com.github.jakz.geophoto.data.Geocode;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
+import com.github.jakz.geophoto.data.geocode.City;
+import com.github.jakz.geophoto.data.geocode.Country;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
@@ -129,6 +132,22 @@ public class PhotoTable extends JPanel implements MultiPhotoView
     coordinateColumn.setRenderer(coordinateRenderer);
     
     model.addColumn(coordinateColumn);
+    
+    ColumnSpec<Photo, Country> countryColumn = new ColumnSpec<>(
+      "",
+      Country.class,
+      p -> p.geocode() != null ? p.geocode().country() : Country.UNKNOWN
+    );
+    
+    model.addColumn(countryColumn);
+    
+    ColumnSpec<Photo, City> cityColumn = new ColumnSpec<>(
+        "",
+        City.class,
+        p -> p.geocode() != null && p.geocode().city().isPresent() ? p.geocode().city().get() : null
+      );
+      
+      model.addColumn(cityColumn);  
   }
   
   public void refreshData()
