@@ -48,6 +48,7 @@ public class Photo implements Comparable<Photo>, MarkerSource
       geocode = reverser.reverse(coordinate);   
   }
 
+  public void geocode(Geocode geocode) { this.geocode = geocode; } 
   public void coordinate(Coordinate coord) { this.coordinate = coord; }
   
   public Path path() { return path; }

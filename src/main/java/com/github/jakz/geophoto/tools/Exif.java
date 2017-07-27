@@ -2,9 +2,11 @@ package com.github.jakz.geophoto.tools;
 
 import java.nio.file.Paths;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
 import com.github.jakz.geophoto.data.Coordinate;
@@ -19,11 +21,13 @@ public class Exif
 {
   private final ExifTool exifTool;
   private final ThreadPoolExecutor pool;
+  private final AtomicLong counter;
   
   public Exif(int poolSize)
   {
     pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(poolSize);
     exifTool = new ExifToolBuilder().withPath(Paths.get("./tools/exiftool").toFile()).enableStayOpen(5000).withPoolSize(poolSize).build();
+    counter = new AtomicLong(0L);
   }
   
   public void dispose() throws Exception
@@ -38,16 +42,27 @@ public class Exif
     exifTool.close();
   }
   
+  public void waitUntilFinished()
+  {
+    while (counter.get() != 0);
+  }
+
   protected <T> Future<T> asyncFetch(Callable<T> task)
   {
-    return pool.submit(task);
+    counter.incrementAndGet();
+    return pool.submit(() -> {
+      T t = task.call();
+      counter.decrementAndGet();
+      return t;
+    });
   }
   
   public void asyncFetch(Photo photo, BiConsumer<Photo, ExifResult> callback, Tag... tags)
   {
     ExifFetchTask task = new ExifFetchTask(photo, this, tags);
     ExifConsumeTask ctask = new ExifConsumeTask(photo, task, callback);
-    pool.submit(ctask);
+    counter.incrementAndGet();
+    pool.submit(() -> { ctask.run(); counter.decrementAndGet(); });
   }
   
   public void asyncFetch(Photo photo, BiConsumer<Photo, ExifResult> process, BiConsumer<Photo, ExifResult> after, Tag... tags)

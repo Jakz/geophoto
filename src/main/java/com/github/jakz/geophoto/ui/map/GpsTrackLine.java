@@ -18,9 +18,7 @@ import com.teamdev.jxmaps.Polyline;
 import com.teamdev.jxmaps.PolylineOptions;
 
 public class GpsTrackLine extends Polyline implements MapElement
-{
-  private static ColorGenerator colorGenerator = new PleasantColorGenerator();
-  
+{  
   private GpxTrackSegment track;
   private final Map map;
   
@@ -34,8 +32,7 @@ public class GpsTrackLine extends Polyline implements MapElement
     this.map = map;
     
     setVisible(false);
-    
-    color = colorGenerator.getColor();
+   
     opacity = 1.0f;
     weight = 2.0f;
     
@@ -47,6 +44,8 @@ public class GpsTrackLine extends Polyline implements MapElement
   public void setSegment(GpxTrackSegment track)
   {
     this.track = track;
+    this.color = track.color();
+    
     rebuild();
   }
   

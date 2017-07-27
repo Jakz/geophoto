@@ -13,6 +13,7 @@ import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoFolder;
 import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxParser;
+import com.github.jakz.geophoto.reverse.GeoReversePool;
 import com.github.jakz.geophoto.reverse.GeocodeReverser;
 import com.github.jakz.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.github.jakz.geophoto.tools.Exif;
@@ -20,6 +21,7 @@ import com.github.jakz.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.UIUtils;
 import com.pixbits.lib.util.ShutdownManager;
+import com.teamdev.jxmaps.g;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 
 
@@ -90,8 +92,6 @@ public class App
       folder.sort();
       
       UI.init(folder);
-
-      GeocodeReverser reverser = new NominatimReverseGeocodingJAPI();
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         exif.asyncFetch(photo, (p, er) -> {
@@ -99,11 +99,6 @@ public class App
           p.coordinate(Coordinate.parse(er));
           if (coord.isValid())
           {
-            try {
-              p.reverseGeoCode(reverser);
-            }
-            catch (Exception e) { e.printStackTrace(); }
-            
             UI.map.addMarker(coord);
           }
           UI.photoTable.refreshData();
@@ -111,6 +106,25 @@ public class App
           
         }, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
       }));
+      
+      {
+        exif.waitUntilFinished();
+        
+        GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
+        
+        folder.forEach(p -> {
+          if (p.coordinate() != null && p.coordinate().isValid())
+          {
+            reversePool.submit(p, (ph,g) -> { 
+              if (g != null)
+              {
+                ph.geocode(g);
+                UI.photoTable.refreshData();
+              }
+            });
+          }
+        });
+      }
 
       /*if (true)
         return;

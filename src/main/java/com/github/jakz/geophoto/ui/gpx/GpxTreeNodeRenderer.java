@@ -72,7 +72,7 @@ public class GpxTreeNodeRenderer extends DefaultTreeCellRenderer
       int waypointCount = segment.points().size();
       
       text = String.format("%s (%d %s) (%.2fkm)", duration, waypointCount, waypointCount > 1 ? "waypoints" : "waypoint", length);
-      setLeafIcon(iconGenerator.generateIcon());
+      setLeafIcon(iconGenerator.generateIcon(segment.color()));
     }
     
     JLabel label = (JLabel)super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, hasFocus);

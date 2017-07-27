@@ -1,5 +1,6 @@
 package com.github.jakz.geophoto.gpx;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -7,6 +8,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import com.pixbits.lib.lang.Pair;
+import com.pixbits.lib.ui.color.ColorGenerator;
+import com.pixbits.lib.ui.color.PleasantColorGenerator;
 import com.pixbits.lib.ui.table.DataSource;
 
 public class GpxTrackSegment implements DataSource<GpxWaypoint>
@@ -16,6 +20,12 @@ public class GpxTrackSegment implements DataSource<GpxWaypoint>
   
   private double[] distanceCache;
   private double totalLength;
+  
+  GpxTrackSegment(List<GpxWaypoint> points)
+  {
+    this.points = points;
+    totalLength = Double.NaN;
+  }
   
   GpxTrackSegment()
   {
@@ -54,4 +64,28 @@ public class GpxTrackSegment implements DataSource<GpxWaypoint>
   @Override public GpxWaypoint get(int index) { return points.get(index); }
   @Override public int size() { return points.size(); }
   @Override public int indexOf(GpxWaypoint object) { return points.indexOf(object); }
+  
+  private Color color;
+  private static final ColorGenerator colorGenerator = new PleasantColorGenerator();
+  
+  public Pair<GpxTrackSegment, GpxTrackSegment> splitAtWaypoint(int index)
+  {
+    List<GpxWaypoint> list1 = new ArrayList<>(points.subList(0, index));
+    List<GpxWaypoint> list2 = new ArrayList<>(points.subList(index, points.size()));
+    
+    Pair<GpxTrackSegment, GpxTrackSegment> pair = new Pair<>(
+        new GpxTrackSegment(list1),
+        new GpxTrackSegment(list2)
+    );  
+    
+    pair.first.extensions = this.extensions;     
+    return pair;
+  }
+  
+  public Color color()
+  { 
+    if (color == null)
+      color = colorGenerator.getColor();
+    return color; 
+  }
 }
