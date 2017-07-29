@@ -2,6 +2,7 @@ package com.github.jakz.geophoto.ui.gpx;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 import com.github.jakz.geophoto.gpx.Gpx;
 import com.github.jakz.geophoto.gpx.GpxTrack;
@@ -65,22 +67,27 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
   @Override
   public void valueChanged(TreeSelectionEvent e)
   {
-    Object object = e.getPath().getLastPathComponent();
-    
-    if (object instanceof GpxTrackSegmentTreeNode)
-    {
-      GpxTrackSegmentTreeNode trackNode = (GpxTrackSegmentTreeNode)object;
-      GpxTrackSegment segment = trackNode.getSegment();
+    TreePath[] paths = trackTree.getSelectionPaths();
+    UI.mapCache.hideAll();
+
+    Arrays.stream(paths).forEach(path -> {
+      Object object = path.getLastPathComponent();
       
-      
-      segmentTable.setSegment(segment);
-      
-      UI.mapCache.hideAll();
-      GpsTrackLine line = UI.mapCache.getOrBuild(GpsTrackLine.class, segment);
-      line.setSegment(segment);
-      line.centerAndFit();
-      line.show();
-    }
-    
+      if (object instanceof GpxTrackSegmentTreeNode)
+      {
+        GpxTrackSegmentTreeNode trackNode = (GpxTrackSegmentTreeNode)object;
+        GpxTrackSegment segment = trackNode.getSegment();
+
+        if (paths.length == 1)
+          segmentTable.setSegment(segment);
+        else
+          segmentTable.clearSegment();
+        
+        GpsTrackLine line = UI.mapCache.getOrBuild(GpsTrackLine.class, segment);
+        line.setSegment(segment);
+        line.centerAndFit();
+        line.show();
+      }
+    });
   }
 }

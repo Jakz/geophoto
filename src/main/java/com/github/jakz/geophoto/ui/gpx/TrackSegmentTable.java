@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.time.ZonedDateTime;
 import java.time.format.FormatStyle;
+import java.util.Collections;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,8 +16,10 @@ import com.github.jakz.geophoto.gpx.GpxWaypoint;
 import com.github.jakz.geophoto.ui.renderers.DateTimeRenderer;
 import com.github.jakz.geophoto.ui.renderers.DistanceRenderer;
 import com.github.jakz.geophoto.ui.renderers.GeographicCoordRenderer;
+import com.github.jakz.geophoto.ui.renderers.SpeedRenderer;
 import com.github.jakz.geophoto.ui.renderers.TimeIntervalRenderer;
 import com.pixbits.lib.ui.table.ColumnSpec;
+import com.pixbits.lib.ui.table.DataSource;
 import com.pixbits.lib.ui.table.TableModel;
 import com.pixbits.lib.util.TimeInterval;
 
@@ -31,6 +34,7 @@ public class TrackSegmentTable extends JPanel
   
   private final GeographicCoordRenderer geographicCoordRenderer;
   private final DistanceRenderer distanceRenderer;
+  private final SpeedRenderer speedRenderer;
 
   
   public TrackSegmentTable()
@@ -47,6 +51,7 @@ public class TrackSegmentTable extends JPanel
     
     geographicCoordRenderer = new GeographicCoordRenderer();
     distanceRenderer = new DistanceRenderer();
+    speedRenderer = new SpeedRenderer();
     
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
@@ -86,11 +91,27 @@ public class TrackSegmentTable extends JPanel
     });
     distanceSpec.setRenderer(distanceRenderer);
     model.addColumn(distanceSpec);
+    
+    ColumnSpec<GpxWaypoint, Double> speedSpec = new ColumnSpec<>("Speed", Double.class);
+    speedSpec.setGetter((i,w) -> {
+      if (i < segment.size() - 1)
+        return w.coordinate().distance(segment.get(i+1).coordinate()) / TimeInterval.of(w.time(), segment.get(i+1).time()).seconds();
+      else
+        return 0.0;
+    });
+    speedSpec.setRenderer(speedRenderer);
+    model.addColumn(speedSpec);
   }
   
   public void setSegment(GpxTrackSegment segment)
   {
     this.segment = segment;
     model.setData(segment);
+  }
+  
+  public void clearSegment()
+  {
+    this.segment = null;
+    model.setData(DataSource.of(Collections.emptyList()));
   }
 }

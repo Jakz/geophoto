@@ -79,7 +79,8 @@ public class MapPanel extends JPanel
         Gpx gpx;
         try
         {
-          gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
+          //gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
+          gpx = GpxParser.parse(Paths.get("/Volumes/Vicky/Photos-SSD/GPX/Indiag/gpx/India-2.gpx"));
           UI.gpxPanel.setTracks(Arrays.asList(gpx));          
         } 
         catch (IOException | SAXException | JAXBException e)

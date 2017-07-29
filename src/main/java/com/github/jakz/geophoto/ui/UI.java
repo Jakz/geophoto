@@ -20,7 +20,7 @@ public class UI
     photoTable = new PhotoTable(folder);
     
     JFrame frame = UIUtils.buildFrame(photoTable, "Photo Table");
-    frame.setVisible(true);
+    //frame.setVisible(true);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     
     map = new MapPanel();
