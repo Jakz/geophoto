@@ -4,7 +4,7 @@ import java.util.Enumeration;
 
 import javax.swing.tree.TreeNode;
 
-import com.github.jakz.geophoto.gpx.GpxTrackSegment;
+import com.pixbits.lib.io.xml.gpx.GpxTrackSegment;
 
 public class GpxTrackSegmentTreeNode implements TreeNode
 {

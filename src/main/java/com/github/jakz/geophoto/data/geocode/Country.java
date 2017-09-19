@@ -1,7 +1,6 @@
 package com.github.jakz.geophoto.data.geocode;
 
 import java.util.Locale;
-import java.util.Objects;
 
 public class Country
 {

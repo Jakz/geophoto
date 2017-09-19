@@ -19,11 +19,9 @@ import org.xml.sax.SAXException;
 
 import com.github.jakz.geophoto.data.Bounds;
 import com.github.jakz.geophoto.data.Coordinate;
-import com.github.jakz.geophoto.gpx.Gpx;
-import com.github.jakz.geophoto.gpx.GpxParser;
-import com.github.jakz.geophoto.gpx.GpxTrackSegment;
-import com.github.jakz.geophoto.ui.map.GpsTrackLine;
 import com.github.jakz.geophoto.ui.map.MapElementCache;
+import com.pixbits.lib.io.xml.gpx.Gpx;
+import com.pixbits.lib.io.xml.gpx.GpxParser;
 import com.teamdev.jxmaps.ControlPosition;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.Map;
@@ -80,7 +78,7 @@ public class MapPanel extends JPanel
         try
         {
           //gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));
-          gpx = GpxParser.parse(Paths.get("/Volumes/Vicky/Photos-SSD/GPX/Indiag/gpx/India-2.gpx"));
+          gpx = GpxParser.parse(Paths.get("/Volumes/Vicky/Photos-SSD/GPX/GPX/Islanda '17/Journey.gpx"));
           UI.gpxPanel.setTracks(Arrays.asList(gpx));          
         } 
         catch (IOException | SAXException | JAXBException e)
@@ -138,7 +136,7 @@ public class MapPanel extends JPanel
       return;
     
     Set<Coordinate> coords = markers.stream().map(Marker::coordinate).collect(Collectors.toSet());
-    Coordinate center = Coordinate.computeCenterOfGravity(coords);
+    Coordinate center = new Coordinate(com.pixbits.lib.io.xml.gpx.Coordinate.computeCenterOfGravity(coords));
     
     map.setCenter(center.toLatLng());
     double zoomLevel = getBoundsZoomLevel(coords, 800, 800);

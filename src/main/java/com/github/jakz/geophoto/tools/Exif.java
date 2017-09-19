@@ -2,7 +2,6 @@ package com.github.jakz.geophoto.tools;
 
 import java.nio.file.Paths;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -10,14 +9,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
 import com.github.jakz.geophoto.data.Coordinate;
-import com.github.jakz.geophoto.data.Photo;
 import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 import java.io.IOException;
 
-public class Exif
+public class Exif<T extends Exifable>
 {
   private final ExifTool exifTool;
   private final ThreadPoolExecutor pool;
@@ -57,22 +55,22 @@ public class Exif
     });
   }
   
-  public void asyncFetch(Photo photo, BiConsumer<Photo, ExifResult> callback, Tag... tags)
+  public void asyncFetch(T photo, BiConsumer<T, ExifResult> callback, Tag... tags)
   {
-    ExifFetchTask task = new ExifFetchTask(photo, this, tags);
-    ExifConsumeTask ctask = new ExifConsumeTask(photo, task, callback);
+    ExifFetchTask<T> task = new ExifFetchTask<>(photo, this, tags);
+    ExifConsumeTask<T> ctask = new ExifConsumeTask<>(photo, task, callback);
     counter.incrementAndGet();
     pool.submit(() -> { ctask.run(); counter.decrementAndGet(); });
   }
   
-  public void asyncFetch(Photo photo, BiConsumer<Photo, ExifResult> process, BiConsumer<Photo, ExifResult> after, Tag... tags)
+  public void asyncFetch(T photo, BiConsumer<T, ExifResult> process, BiConsumer<T, ExifResult> after, Tag... tags)
   {
     asyncFetch(photo, process.andThen(after), tags);
   }
  
-  public Coordinate loadCoordinate(Photo photo) throws IOException
+  public Coordinate loadCoordinate(T photo) throws IOException
   {
-    ExifFetchTask task = new ExifFetchTask(photo, this, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
+    ExifFetchTask<T> task = new ExifFetchTask<>(photo, this, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
     DerivedTask<ExifResult, Coordinate> dtask = new DerivedTask<>(task, v -> Coordinate.parse(v));
     Future<Coordinate> coord = asyncFetch(dtask);
     

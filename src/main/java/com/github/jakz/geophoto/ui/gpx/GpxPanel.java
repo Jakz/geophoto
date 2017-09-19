@@ -12,14 +12,12 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import com.github.jakz.geophoto.gpx.Gpx;
-import com.github.jakz.geophoto.gpx.GpxTrack;
-import com.github.jakz.geophoto.gpx.GpxTrackSegment;
 import com.github.jakz.geophoto.ui.UI;
 import com.github.jakz.geophoto.ui.map.GpsTrackLine;
+import com.pixbits.lib.io.xml.gpx.Gpx;
+import com.pixbits.lib.io.xml.gpx.GpxTrackSegment;
 
 public class GpxPanel extends JPanel implements TreeSelectionListener
 {

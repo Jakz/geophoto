@@ -5,16 +5,15 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.github.jakz.geophoto.Log;
-import com.github.jakz.geophoto.data.Photo;
 import com.thebuzzmedia.exiftool.Tag;
 
-public class ExifFetchTask implements Callable<ExifResult>
+public class ExifFetchTask<T extends Exifable> implements Callable<ExifResult>
 {
-  private final Exif exif;
-  private final Photo photo;
+  private final Exif<T> exif;
+  private final T photo;
   private final Tag[] tags;
   
-  ExifFetchTask(Photo photo, Exif exif, Tag... tags)
+  ExifFetchTask(T photo, Exif<T> exif, Tag... tags)
   {
     this.photo = photo;
     this.exif = exif;
@@ -25,7 +24,7 @@ public class ExifFetchTask implements Callable<ExifResult>
   public ExifResult call() throws Exception
   {
     Log.d("exiftool", "executing ' exiftool...'");
-    Map<Tag, String> values = exif.getTool().getImageMeta(photo.file(), Arrays.asList(tags));
+    Map<Tag, String> values = exif.getTool().getImageMeta(photo.path().toFile(), Arrays.asList(tags));
     return new ExifResult(values);
   }
 

@@ -1,6 +1,5 @@
 package com.github.jakz.geophoto.ui.map;
 
-import java.util.Collection;
 import java.util.stream.StreamSupport;
 
 import com.github.jakz.geophoto.data.Bounds;
@@ -16,7 +15,7 @@ public interface Positionable
   {
     Iterable<Coordinate> coordinates = coordinates();
     
-    Coordinate center = Coordinate.computeCenterOfGravity(coordinates);
+    Coordinate center = new Coordinate(com.pixbits.lib.io.xml.gpx.Coordinate.computeCenterOfGravity(coordinates));
     map().setCenter(center.toLatLng());
     double zoomLevel = getBoundsZoomLevel(coordinates, 800, 800);
     map().setZoom(zoomLevel-1);

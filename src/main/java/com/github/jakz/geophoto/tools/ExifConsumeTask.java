@@ -2,15 +2,13 @@ package com.github.jakz.geophoto.tools;
 
 import java.util.function.BiConsumer;
 
-import com.github.jakz.geophoto.data.Photo;
-
-public class ExifConsumeTask implements Runnable
+public class ExifConsumeTask<T extends Exifable> implements Runnable
 {
-  private final Photo photo;
-  private final BiConsumer<Photo, ExifResult> callback;
-  private final ExifFetchTask task;
+  private final T photo;
+  private final BiConsumer<T, ExifResult> callback;
+  private final ExifFetchTask<T> task;
   
-  ExifConsumeTask(Photo photo, ExifFetchTask task, BiConsumer<Photo, ExifResult> callback)
+  ExifConsumeTask(T photo, ExifFetchTask<T> task, BiConsumer<T, ExifResult> callback)
   {
     this.photo = photo;
     this.task = task;

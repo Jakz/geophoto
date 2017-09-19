@@ -6,7 +6,7 @@ import java.util.function.BiConsumer;
 import org.im4java.core.IM4JavaException;
 
 import com.github.jakz.geophoto.data.Photo;
-import com.github.jakz.geophoto.data.Size;
+import com.pixbits.lib.lang.Size;
 
 public class ThumbnailSet
 {   
@@ -39,7 +39,7 @@ public class ThumbnailSet
       
       scheduled[size.ordinal()] = true;
       
-      ThumbnailCache.cache.getThumbnail(photo, new Size(80,80), (p,t) -> {
+      ThumbnailCache.cache.getThumbnail(photo, new Size.Int(80,80), (p,t) -> {
         thumbnails[size.ordinal()] = t;
         scheduled[size.ordinal()] = false;
         callback.accept(p,t);

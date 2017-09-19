@@ -10,9 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import com.github.jakz.geophoto.gpx.Gpx;
-import com.github.jakz.geophoto.gpx.GpxTrack;
-import com.github.jakz.geophoto.gpx.GpxTrackSegment;
+import com.pixbits.lib.io.xml.gpx.Gpx;
+import com.pixbits.lib.io.xml.gpx.GpxTrack;
+import com.pixbits.lib.io.xml.gpx.GpxTrackSegment;
 import com.pixbits.lib.ui.color.PleasantColorGenerator;
 import com.pixbits.lib.ui.color.SquareIconGenerator;
 import com.pixbits.lib.util.TimeInterval;

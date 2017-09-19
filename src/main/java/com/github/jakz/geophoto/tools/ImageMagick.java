@@ -18,7 +18,7 @@ import org.im4java.process.ProcessTask;
 import com.github.jakz.geophoto.Log;
 import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.data.Photo;
-import com.github.jakz.geophoto.data.Size;
+import com.pixbits.lib.lang.Size;
 
 public class ImageMagick
 {
@@ -52,15 +52,15 @@ public class ImageMagick
     pool.submit(task);
   }
   
-  public void createThumbnail(Photo photo, Size size, BiConsumer<Photo, Thumbnail> callback) throws IM4JavaException, InterruptedException, IOException
+  public void createThumbnail(Photo photo, Size.Int size, BiConsumer<Photo, Thumbnail> callback) throws IM4JavaException, InterruptedException, IOException
   { 
     ConvertCmd command = convert();
     
     IMOperation operation = new IMOperation();
     
-    operation.define(String.format("jpeg:size=%dx%d", size.width*2, size.height*2));
+    operation.define(String.format("jpeg:size=%dx%d", size.w*2, size.h*2));
     operation.addImage();
-    operation.thumbnail(size.width, size.height);
+    operation.thumbnail(size.w, size.h);
     operation.unsharp(0.5);
     operation.autoOrient();
     operation.format("jpg");
@@ -75,13 +75,13 @@ public class ImageMagick
     submit(command, operation, photo.path().toString());
   }
   
-  public void createThumbnail(Photo photo, Size size, Path output) throws IM4JavaException, InterruptedException, IOException
+  public void createThumbnail(Photo photo, Size.Int size, Path output) throws IM4JavaException, InterruptedException, IOException
   {
     IMOperation operation = new IMOperation();
     
-    operation.define(String.format("jpeg:size=%dx%d", size.width*2, size.height*2));
+    operation.define(String.format("jpeg:size=%dx%d", size.w*2, size.h*2));
     operation.addImage();
-    operation.thumbnail(size.width, size.height);
+    operation.thumbnail(size.w, size.h);
     operation.unsharp(0.5);
     operation.autoOrient();
     operation.format("jpg");

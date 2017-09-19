@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 
 import com.github.jakz.geophoto.data.PhotoFolder;
 import com.github.jakz.geophoto.ui.gpx.GpxPanel;
-import com.github.jakz.geophoto.ui.gpx.TrackSegmentTable;
 import com.github.jakz.geophoto.ui.map.MapElementCache;
 import com.pixbits.lib.ui.UIUtils;
 

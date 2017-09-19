@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.tree.TreeNode;
 
-import com.github.jakz.geophoto.gpx.GpxTrack;
+import com.pixbits.lib.io.xml.gpx.GpxTrack;
 
 public class GpxTrackTreeNode implements TreeNode
 {

@@ -5,11 +5,9 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import com.github.jakz.geophoto.data.Coordinate;
-import com.github.jakz.geophoto.gpx.GpxTrackSegment;
-import com.github.jakz.geophoto.gpx.GpxWaypoint;
-import com.pixbits.lib.ui.color.ColorGenerator;
+import com.pixbits.lib.io.xml.gpx.GpxTrackSegment;
+import com.pixbits.lib.io.xml.gpx.GpxWaypoint;
 import com.pixbits.lib.ui.color.ColorUtils;
-import com.pixbits.lib.ui.color.PleasantColorGenerator;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.Map;
 import com.teamdev.jxmaps.MapMouseEvent;
@@ -52,7 +50,7 @@ public class GpsTrackLine extends Polyline implements MapElement
   private void rebuild()
   {    
     LatLng[] points = track.points().stream()
-        .map(w -> w.coordinate())
+        .map(w -> new Coordinate(w.coordinate()))
         .map(Coordinate::toLatLng)
         .toArray(i -> new LatLng[i]);
       
@@ -79,6 +77,7 @@ public class GpsTrackLine extends Polyline implements MapElement
   { 
     return track.points().stream()
       .map(GpxWaypoint::coordinate)
+      .map(c -> new Coordinate(c))
       .collect(Collectors.toList());
   }
   

@@ -1,21 +1,22 @@
 package com.github.jakz.geophoto.data;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import com.github.jakz.geophoto.cache.ThumbnailSet;
 import com.github.jakz.geophoto.reverse.GeocodeReverser;
+import com.github.jakz.geophoto.tools.Exifable;
 import com.github.jakz.geophoto.ui.MarkerSource;
+import com.pixbits.lib.lang.Size;
 
-public class Photo implements Comparable<Photo>, MarkerSource
+public class Photo implements Comparable<Photo>, MarkerSource, Exifable
 {
   private String name;
   private Path path;
   private Coordinate coordinate;
   private Geocode geocode;
-  private Size size;
+  private Size.Int size;
   
   private ThumbnailSet thumbnails;
   
@@ -42,7 +43,7 @@ public class Photo implements Comparable<Photo>, MarkerSource
   
   public void reverseGeoCode(GeocodeReverser reverser)
   {
-    if (coordinate == Coordinate.UNKNOWN)
+    if (coordinate.isUnknown())
       geocode = Geocode.UNKNOWN;
     else if (coordinate != null)
       geocode = reverser.reverse(coordinate);   
@@ -52,7 +53,6 @@ public class Photo implements Comparable<Photo>, MarkerSource
   public void coordinate(Coordinate coord) { this.coordinate = coord; }
   
   public Path path() { return path; }
-  public File file() { return path.toFile(); }
   public Coordinate coordinate() { return coordinate; }
   public Geocode geocode() { return geocode; }
   

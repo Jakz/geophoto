@@ -1,10 +1,6 @@
 package com.github.jakz.geophoto.ui.renderers;
 
 import java.awt.Component;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;

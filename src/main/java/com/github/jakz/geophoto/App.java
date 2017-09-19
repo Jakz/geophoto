@@ -1,9 +1,6 @@
 package com.github.jakz.geophoto;
 
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
-
 import javax.xml.bind.JAXBException;
 
 import org.xml.sax.SAXException;
@@ -11,17 +8,14 @@ import org.xml.sax.SAXException;
 import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoFolder;
-import com.github.jakz.geophoto.gpx.Gpx;
-import com.github.jakz.geophoto.gpx.GpxParser;
+
 import com.github.jakz.geophoto.reverse.GeoReversePool;
-import com.github.jakz.geophoto.reverse.GeocodeReverser;
 import com.github.jakz.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.ui.UIUtils;
 import com.pixbits.lib.util.ShutdownManager;
-import com.teamdev.jxmaps.g;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 
 
@@ -72,7 +66,7 @@ public class App
       return;*/
     
     
-    Exif exif = new Exif(5);
+    Exif<Photo> exif = new Exif<>(5);
     shutdown = new ShutdownManager(true);
     shutdown.addTask(() -> { try { exif.dispose(); } catch (Exception e) { } });
 
@@ -113,7 +107,7 @@ public class App
         GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
         
         folder.forEach(p -> {
-          if (p.coordinate() != null && p.coordinate().isValid())
+          if (p.coordinate() != null && !p.coordinate().isUnknown())
           {
             reversePool.submit(p, (ph,g) -> { 
               if (g != null)

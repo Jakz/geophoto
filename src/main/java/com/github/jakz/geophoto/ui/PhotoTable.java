@@ -18,7 +18,6 @@ import javax.swing.table.TableCellRenderer;
 import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.cache.ThumbnailSize;
 import com.github.jakz.geophoto.data.Coordinate;
-import com.github.jakz.geophoto.data.Geocode;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.geocode.City;
