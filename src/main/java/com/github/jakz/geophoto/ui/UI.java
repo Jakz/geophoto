@@ -10,17 +10,26 @@ import com.pixbits.lib.ui.WrapperFrame;
 
 public class UI
 {
-  public static PhotoTable photoTable;
+  public static PhotoList photoTable;
+  public static PhotoGrid photoGrid;
+  
   public static GpxPanel gpxPanel;
   public static PhotoMapPanel map;
   
+  
   public static void init(PhotoFolder folder)
   {
-    photoTable = new PhotoTable(App.mediator, folder);
+    photoTable = new PhotoList(App.mediator, folder);
     
-    WrapperFrame<?> frame = UIUtils.buildFrame(photoTable, "Photo Table");
+    /*WrapperFrame<?> frame = UIUtils.buildFrame(photoTable, "Photo Table");
     frame.setVisible(true);
-    frame.exitOnClose();
+    frame.exitOnClose();*/
+    
+    photoGrid = new PhotoGrid(App.mediator, folder);
+    
+    WrapperFrame<?> grid = UIUtils.buildFrame(photoGrid, "Photo Grid");
+    grid.setVisible(true);
+    grid.exitOnClose();
     
     map = new PhotoMapPanel();
     

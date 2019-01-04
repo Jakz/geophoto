@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -37,7 +38,7 @@ import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
 
-public class PhotoTable extends JPanel implements MultiPhotoView
+public class PhotoList extends JPanel implements MultiPhotoView
 {
   PhotoEnumeration photos;
   
@@ -53,14 +54,14 @@ public class PhotoTable extends JPanel implements MultiPhotoView
     @Override
     public void accept(Photo t, T u, Boolean isNew)
     {
-      SwingUtilities.invokeLater(() -> PhotoTable.this.refreshData());
+      SwingUtilities.invokeLater(() -> PhotoList.this.refreshData());
     }  
   }
   
   private final RefreshDataCallback<Thumbnail> thumbnailLoadedCallback = new RefreshDataCallback<>();
   //private final RefreshDataCallback<ExifResult> exifDataLoaded = new RefreshDataCallback<>();
   
-  public PhotoTable(Mediator mediator, PhotoEnumeration photos)
+  public PhotoList(Mediator mediator, PhotoEnumeration photos)
   {
     this.mediator = mediator;
     
@@ -70,6 +71,8 @@ public class PhotoTable extends JPanel implements MultiPhotoView
     model = new TableModel<>(table, scrollPane, photos);
     
     scrollPane.setPreferredSize(new Dimension(400,800));
+    //scrollPane.getVerticalScrollBar().setUnitIncrement(1);
+    //scrollPane.getViewport().setScrollMode(JViewport.BACKINGSTORE_SCROLL_MODE);
     
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
