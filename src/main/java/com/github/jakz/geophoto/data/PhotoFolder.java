@@ -93,8 +93,4 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
   {
     photos.forEach(consumer);
   }
-
-
-
-
 }

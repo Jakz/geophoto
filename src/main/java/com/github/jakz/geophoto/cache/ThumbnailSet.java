@@ -11,6 +11,7 @@ import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.data.Photo;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.functional.TriConsumer;
+import com.pixbits.lib.lang.Pair;
 import com.pixbits.lib.lang.Size;
 
 public class ThumbnailSet
@@ -31,24 +32,23 @@ public class ThumbnailSet
     return thumbnails[size.ordinal()];
   }
   
-  public Thumbnail asyncGet(Mediator mediator, ThumbnailSize size, TriConsumer<Photo, Thumbnail, Boolean> callback) throws IM4JavaException, InterruptedException, IOException
+  public Pair<Thumbnail, Boolean> asyncGet(Mediator mediator, ThumbnailSize size, TriConsumer<Photo, Thumbnail, Boolean> callback) throws IM4JavaException, InterruptedException, IOException
   {
     Thumbnail thumbnail = get(size);
     
     if (thumbnail != null)
-      return thumbnail;
+      return new Pair<>(thumbnail, false);
     else
     {
       if (scheduled[size.ordinal()])
-        return null;
+        return new Pair<>(null, false);
       
       Thumbnail tb = mediator.pdatabase().getThumbnailForPhoto(photo, size);
       
       if (tb != null)
       {
         thumbnails[size.ordinal()] = tb;
-        callback.accept(photo, tb, false);
-        return tb;
+        return new Pair<>(tb, false);
       }
       
       scheduled[size.ordinal()] = true;
@@ -62,7 +62,7 @@ public class ThumbnailSet
         callback.accept(p, t, true);
       }));
       
-      return null;
+      return new Pair<>(null, true);
     }
   }
   

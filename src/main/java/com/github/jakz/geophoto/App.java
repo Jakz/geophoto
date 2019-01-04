@@ -138,7 +138,8 @@ public class App
       folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
       folder.sort();
             
-      UI.init(folder);
+      UI ui = mediator.ui();
+      mediator.ui().init(folder);
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         Coordinate c = mediator.pdatabase().getCoordinateForPhoto(photo);
@@ -153,9 +154,9 @@ public class App
             if (coord.isValid())
             {
               mediator.pdatabase().setCoordinateForPhoto(photo, coord);
-              UI.map.addMarker(coord, photo);
+              ui.map.addMarker(coord, photo);
             }
-            UI.photoTable.refreshData();
+            ui.photoTable.refreshData();
               
             
           }), StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);

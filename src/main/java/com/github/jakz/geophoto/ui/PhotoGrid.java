@@ -28,6 +28,7 @@ import com.github.jakz.geophoto.cache.ThumbnailSize;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.pixbits.lib.functional.TriConsumer;
+import com.pixbits.lib.lang.Pair;
 import com.pixbits.lib.ui.table.ListModel;
 
 public class PhotoGrid extends JPanel
@@ -58,6 +59,7 @@ public class PhotoGrid extends JPanel
     
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
+    add(mediator.ui().statusBar(), BorderLayout.SOUTH);
   }
 
   private class RefreshDataCallback<T> implements TriConsumer<Photo, T, Boolean>
@@ -65,6 +67,7 @@ public class PhotoGrid extends JPanel
     @Override
     public void accept(Photo t, T u, Boolean isNew)
     {
+      mediator.ui().statusBar().taskDone();
       SwingUtilities.invokeLater(() -> refreshData());
     }  
   }
@@ -86,15 +89,20 @@ public class PhotoGrid extends JPanel
       
       try 
       {
-        Thumbnail value = photo.thumbnails().asyncGet(mediator, ThumbnailSize.TINY, thumbnailLoadedCallback);
+        super.getListCellRendererComponent(list, v, index, isSelected, cellHasFocus);
+        
+        Pair<Thumbnail, Boolean> value = photo.thumbnails().asyncGet(mediator, ThumbnailSize.TINY, thumbnailLoadedCallback);
         
         setVerticalTextPosition(SwingConstants.BOTTOM);        
         setHorizontalTextPosition(SwingConstants.CENTER);
         
-        if (value != null)
-          setIcon(new ImageIcon(value.image()));
+        if (value.first != null)
+          setIcon(new ImageIcon(value.first.image()));
         else 
           setIcon(null);
+        
+        if (value.second)
+          mediator.ui().statusBar().taskAdd();
         
         setText(photo.path().getFileName().toString());
       } 

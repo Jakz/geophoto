@@ -1,21 +1,26 @@
 package com.github.jakz.geophoto.ui;
 
 import java.util.List;
+
+import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.data.Photo;
 import com.pixbits.lib.ui.table.DataSource;
 import com.pixbits.lib.ui.table.ManagedListSelectionListener;
 
 public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
 {
-  PhotoSelectionListener(DataSource<Photo> data)
+  private final Mediator mediator;
+  
+  PhotoSelectionListener(Mediator mediator, DataSource<Photo> data)
   {
     super(data);
+    this.mediator = mediator;
   }
   
   @Override
   protected void commonActionBefore()
   {
-    UI.map.markers().clear();
+    mediator.ui().map.markers().clear();
     
     //TODO: UI.map.markers().clearMarkers();
   }
@@ -37,9 +42,10 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
   {
     if (photo.coordinate().isValid())
     {
-      UI.map.addMarker(photo.coordinate(), photo);
-      UI.map.centerAndZoomOn(photo.coordinate());
-      UI.map.markers().invalidate();
+      PhotoMapPanel map = mediator.ui().map;
+      map.addMarker(photo.coordinate(), photo);
+      map.centerAndZoomOn(photo.coordinate());
+      map.markers().invalidate();
     }
   }
   
@@ -49,10 +55,10 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
     photos.forEach(photo -> { 
       if (photo.coordinate().isValid())
       {
-        UI.map.addMarker(photo.coordinate(), photo);
+        mediator.ui().map.addMarker(photo.coordinate(), photo);
       }
     });
-    UI.map.markers().invalidate();
+    mediator.ui().map.markers().invalidate();
   }
 
 }

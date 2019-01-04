@@ -79,14 +79,14 @@ public class PhotoList extends JPanel implements MultiPhotoView
     
     table.setRowHeight(90);
     table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    table.getSelectionModel().addListSelectionListener(new PhotoSelectionListener(photos));
+    table.getSelectionModel().addListSelectionListener(new PhotoSelectionListener(mediator, photos));
           
     /* thumbnail */
     ColumnSpec<Photo, ImageIcon> thumbnailColumn = new ColumnSpec<>(
        "",
        ImageIcon.class,
        StreamException.rethrowFunction(p -> { 
-         Thumbnail thumbnail = p.thumbnails().asyncGet(mediator, ThumbnailSize.TINY, thumbnailLoadedCallback);
+         Thumbnail thumbnail = p.thumbnails().asyncGet(mediator, ThumbnailSize.TINY, thumbnailLoadedCallback).first;
          return thumbnail != null ? new ImageIcon(thumbnail.image()) : null;
        })
     );
