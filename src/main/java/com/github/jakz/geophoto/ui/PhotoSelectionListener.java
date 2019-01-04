@@ -15,6 +15,8 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
   @Override
   protected void commonActionBefore()
   {
+    UI.map.markers().clear();
+    
     //TODO: UI.map.markers().clearMarkers();
   }
   
@@ -37,6 +39,7 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
     {
       UI.map.addMarker(photo.coordinate(), photo);
       UI.map.centerAndZoomOn(photo.coordinate());
+      UI.map.markers().invalidate();
     }
   }
   
@@ -45,8 +48,11 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
   {
     photos.forEach(photo -> { 
       if (photo.coordinate().isValid())
-        ;//TODO: UI.map.markers().addMarker(photo, photo.coordinate());
+      {
+        UI.map.addMarker(photo.coordinate(), photo);
+      }
     });
+    UI.map.markers().invalidate();
   }
 
 }

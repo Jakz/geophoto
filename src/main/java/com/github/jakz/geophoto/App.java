@@ -77,9 +77,7 @@ public class App
     }
 
     Exif<Photo> exif = new Exif<>(5);
-    shutdown = new ShutdownManager(true);
-    shutdown.addTask(() -> { try { exif.dispose(); } catch (Exception e) { } });
-    shutdown.addTask(() -> { try { mediator.shutdown(); } catch (Exception e) { e.printStackTrace(); } });
+
 
     //System.setProperty("exiftool.debug", "true");
     
@@ -143,17 +141,28 @@ public class App
       UI.init(folder);
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
-        exif.asyncFetch(photo, (p, er) -> {
-          Coordinate coord = Exif.parseGpxTags(er);
-          p.coordinate(coord);
-          if (coord.isValid())
-          {
-            UI.map.addMarker(coord, photo);
-          }
-          UI.photoTable.refreshData();
+        Coordinate c = mediator.pdatabase().getCoordinateForPhoto(photo);
+        
+        if (c != null)
+          photo.coordinate(c);
+        else
+        {
+          exif.asyncFetch(photo, StreamException.rethrowBiConsumer((p, er) -> {
+            Coordinate coord = Exif.parseGpxTags(er);
+            p.coordinate(coord);
+            if (coord.isValid())
+            {
+              mediator.pdatabase().setCoordinateForPhoto(photo, coord);
+              UI.map.addMarker(coord, photo);
+            }
+            UI.photoTable.refreshData();
+              
             
-          
-        }, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
+          }), StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
+        }
+        
+        
+
       }));
       
       {

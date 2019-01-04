@@ -28,6 +28,11 @@ public class Exif<T extends Exifable>
     counter = new AtomicLong(0L);
   }
   
+  public void enableDebug()
+  {
+    System.setProperty("exiftool.debug", "true");
+  }
+  
   public void dispose() throws Exception
   {
     pool.shutdownNow();
