@@ -22,9 +22,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.commons.io.IOUtils;
 
-import com.github.jakz.geophoto.data.Geocode;
+import com.github.jakz.geophoto.data.geocode.Geocode;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
 
 /**
@@ -36,7 +38,7 @@ import com.pixbits.lib.io.xml.gpx.Coordinate;
  */
 public class NominatimReverseGeocodingJAPI implements GeocodeReverser
 {
-  private final String NominatimInstance = "http://nominatim.openstreetmap.org";
+  private final String NominatimInstance = "https://nominatim.openstreetmap.org";
 
   private int zoomLevel;
   private String locale = "en-us";
@@ -188,8 +190,12 @@ public class NominatimReverseGeocodingJAPI implements GeocodeReverser
 
   private String getJSON(String urlString) throws IOException
   {
-    URL url = new URL(urlString);
-    URLConnection conn = url.openConnection();
+    URL obj = new URL(urlString);
+    HttpsURLConnection conn = (HttpsURLConnection) obj.openConnection();
+    conn.setRequestMethod("GET");
+    conn.setRequestProperty("Content-Type", "application/json");
+    conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
+    
     InputStream is = conn.getInputStream();
     String json = IOUtils.toString(is, "UTF-8");
     is.close();

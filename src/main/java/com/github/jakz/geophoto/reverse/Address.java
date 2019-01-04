@@ -18,7 +18,9 @@ public class Address {
 	private String display_name = "";
 	
 	public Address(String json, int lod){
-		try {			
+		try {	
+		  System.out.println("JSON: "+json);
+		  
 			JSONObject jObject = new JSONObject(json);	
 			
 			if(jObject.has("error")){

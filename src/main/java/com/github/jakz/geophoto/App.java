@@ -26,6 +26,7 @@ import com.thebuzzmedia.exiftool.core.StandardTag;
 public class App 
 {
   static ShutdownManager shutdown;
+  public static Mediator mediator = new MyMediator();
       
   public static void main( String[] args )
   {    
@@ -44,8 +45,7 @@ public class App
       return;*/
     
     
-    UIUtils.setNimbusLNF();
-    
+
     /*Path qr = Paths.get("/Volumes/Vicky/Photos-SSD/GPX/Cina '16/qr/10-1/P8100623.JPG");
     try
     {
@@ -65,10 +65,21 @@ public class App
     if (true)
       return;*/
     
+    UIUtils.setNimbusLNF();
     
+    try
+    {
+      mediator.init();
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+
     Exif<Photo> exif = new Exif<>(5);
     shutdown = new ShutdownManager(true);
     shutdown.addTask(() -> { try { exif.dispose(); } catch (Exception e) { } });
+    shutdown.addTask(() -> { try { mediator.shutdown(); } catch (Exception e) { e.printStackTrace(); } });
 
     //System.setProperty("exiftool.debug", "true");
     
@@ -122,8 +133,8 @@ public class App
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      //PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Normandia '17"));
-      PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
+      PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Normandia '17"));
+      //PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
 
       
       folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
@@ -137,7 +148,7 @@ public class App
           p.coordinate(coord);
           if (coord.isValid())
           {
-            //TODO: UI.map.addMarker(coord);
+            UI.map.addMarker(coord, photo);
           }
           UI.photoTable.refreshData();
             

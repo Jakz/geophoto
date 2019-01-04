@@ -5,6 +5,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import com.github.jakz.geophoto.cache.ThumbnailSet;
+import com.github.jakz.geophoto.data.geocode.Geocode;
 import com.github.jakz.geophoto.reverse.GeocodeReverser;
 import com.github.jakz.geophoto.tools.Exifable;
 import com.github.jakz.geophoto.ui.MarkerSource;

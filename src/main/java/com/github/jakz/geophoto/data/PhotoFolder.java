@@ -29,11 +29,10 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
     
     this.path = path;
     this.recursive = recursive;
+
     
-   
-    
-    this.subFolders = new ArrayList<PhotoFolder>();
-    this.photos = new ArrayList<Photo>();
+    this.subFolders = new ArrayList<>();
+    this.photos = new ArrayList<>();
     
     this.scanner = new FolderScanner("glob:*.{JPG,jpg}", null, recursive);
   }
@@ -52,6 +51,7 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
   {
     Collections.sort(photos);
     Collections.sort(subFolders);
+    subFolders.forEach(PhotoFolder::sort);
   }
   
   public Set<Path> findAllImages() throws IOException

@@ -5,8 +5,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.BiConsumer;
 
-import com.github.jakz.geophoto.data.Geocode;
 import com.github.jakz.geophoto.data.Photo;
+import com.github.jakz.geophoto.data.geocode.Geocode;
 
 public class GeoReversePool
 {

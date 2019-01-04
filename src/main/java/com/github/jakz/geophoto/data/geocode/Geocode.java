@@ -1,9 +1,7 @@
-package com.github.jakz.geophoto.data;
+package com.github.jakz.geophoto.data.geocode;
 
 import java.util.Optional;
 
-import com.github.jakz.geophoto.data.geocode.City;
-import com.github.jakz.geophoto.data.geocode.Country;
 import com.github.jakz.geophoto.reverse.Address;
 
 public class Geocode

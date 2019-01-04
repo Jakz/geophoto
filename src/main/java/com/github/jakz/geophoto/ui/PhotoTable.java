@@ -3,7 +3,15 @@ package com.github.jakz.geophoto.ui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.function.BiConsumer;
+
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,13 +23,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.cache.Thumbnail;
+import com.github.jakz.geophoto.cache.ThumbnailSet;
 import com.github.jakz.geophoto.cache.ThumbnailSize;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.geocode.City;
 import com.github.jakz.geophoto.data.geocode.Country;
 import com.pixbits.lib.functional.StreamException;
+import com.pixbits.lib.functional.TriConsumer;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
@@ -30,15 +41,17 @@ public class PhotoTable extends JPanel implements MultiPhotoView
 {
   PhotoEnumeration photos;
   
+  private final Mediator mediator;
+  
   private final TableModel<Photo> model;
   
   private final JTable table;
   private final JScrollPane scrollPane;
   
-  private class RefreshDataCallback<T> implements BiConsumer<Photo, T>
+  private class RefreshDataCallback<T> implements TriConsumer<Photo, T, Boolean>
   {
     @Override
-    public void accept(Photo t, T u)
+    public void accept(Photo t, T u, Boolean isNew)
     {
       SwingUtilities.invokeLater(() -> PhotoTable.this.refreshData());
     }  
@@ -47,8 +60,10 @@ public class PhotoTable extends JPanel implements MultiPhotoView
   private final RefreshDataCallback<Thumbnail> thumbnailLoadedCallback = new RefreshDataCallback<>();
   //private final RefreshDataCallback<ExifResult> exifDataLoaded = new RefreshDataCallback<>();
   
-  public PhotoTable(PhotoEnumeration photos)
+  public PhotoTable(Mediator mediator, PhotoEnumeration photos)
   {
+    this.mediator = mediator;
+    
     this.photos = photos;
     table = new JTable();
     scrollPane = new JScrollPane(table);
@@ -68,7 +83,7 @@ public class PhotoTable extends JPanel implements MultiPhotoView
        "",
        ImageIcon.class,
        StreamException.rethrowFunction(p -> { 
-         Thumbnail thumbnail = p.thumbnails().asyncGet(ThumbnailSize.TINY, thumbnailLoadedCallback);
+         Thumbnail thumbnail = p.thumbnails().asyncGet(mediator, ThumbnailSize.TINY, thumbnailLoadedCallback);
          return thumbnail != null ? new ImageIcon(thumbnail.image()) : null;
        })
     );

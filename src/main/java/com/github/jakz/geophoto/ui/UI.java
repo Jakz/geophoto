@@ -2,9 +2,11 @@ package com.github.jakz.geophoto.ui;
 
 import javax.swing.JFrame;
 
+import com.github.jakz.geophoto.App;
 import com.github.jakz.geophoto.data.PhotoFolder;
 import com.github.jakz.geophoto.ui.gpx.GpxPanel;
 import com.pixbits.lib.ui.UIUtils;
+import com.pixbits.lib.ui.WrapperFrame;
 
 public class UI
 {
@@ -14,23 +16,24 @@ public class UI
   
   public static void init(PhotoFolder folder)
   {
-    photoTable = new PhotoTable(folder);
+    photoTable = new PhotoTable(App.mediator, folder);
     
-    JFrame frame = UIUtils.buildFrame(photoTable, "Photo Table");
+    WrapperFrame<?> frame = UIUtils.buildFrame(photoTable, "Photo Table");
     frame.setVisible(true);
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.exitOnClose();
     
     map = new PhotoMapPanel();
     
-    JFrame mapFrame = UIUtils.buildFrame(map, "Map");
+    WrapperFrame<?> mapFrame = UIUtils.buildFrame(map, "Map");
     mapFrame.setVisible(true);
-    mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    mapFrame.setResizable(true);
+    mapFrame.exitOnClose();
     
     gpxPanel = new GpxPanel();
     
-    JFrame gpxFrame = UIUtils.buildFrame(gpxPanel, "Gpx Tracks");
-    gpxFrame.setVisible(true);
-    gpxFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    WrapperFrame<?> gpxFrame = UIUtils.buildFrame(gpxPanel, "Gpx Tracks");
+    //gpxFrame.setVisible(true);
+    gpxFrame.exitOnClose();
   }
   
   public static MultiPhotoView currentPhotoView() 

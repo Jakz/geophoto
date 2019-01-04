@@ -167,5 +167,10 @@
 			<artifactId>jxmapviewer2</artifactId>
 			<version>2.4</version>
 		</dependency>
+    <dependency>
+      <groupId>org.fusesource.leveldbjni</groupId>
+      <artifactId>leveldbjni-osx</artifactId>
+      <version>1.8</version>
+    </dependency>
   </dependencies>
 </project>

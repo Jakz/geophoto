@@ -1,6 +1,7 @@
 package com.github.jakz.geophoto.cache;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 
 public class Thumbnail
 {
@@ -19,5 +20,10 @@ public class Thumbnail
   }
   
   public BufferedImage image() { return image; }
+  
+  public long sizeInBytes() { 
+    DataBuffer buffer = image.getRaster().getDataBuffer();
+    return buffer.getSize() * DataBuffer.getDataTypeSize(buffer.getDataType())/8;
+  }
 
 }
