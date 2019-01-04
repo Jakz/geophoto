@@ -63,7 +63,7 @@ public class GpxFileTreeNode implements TreeNode
   }
   
   @Override
-  public Enumeration<?> children()
+  public Enumeration<? extends TreeNode> children()
   {
     return Collections.enumeration(nodes);
   }

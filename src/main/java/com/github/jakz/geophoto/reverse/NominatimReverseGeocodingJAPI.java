@@ -24,8 +24,8 @@ import java.net.URLConnection;
 
 import org.apache.commons.io.IOUtils;
 
-import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Geocode;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 
 /**
  * Java library for reverse geocoding using Nominatim

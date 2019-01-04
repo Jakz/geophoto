@@ -2,8 +2,8 @@ package com.github.jakz.geophoto.reverse;
 
 import java.util.concurrent.Callable;
 
-import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Geocode;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 
 public class GeoReverseTask implements Callable<Geocode>
 {

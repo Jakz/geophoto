@@ -1,11 +1,15 @@
 package com.github.jakz.geophoto;
 
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.xml.bind.JAXBException;
 
 import org.xml.sax.SAXException;
 
-import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoFolder;
 
@@ -14,15 +18,11 @@ import com.github.jakz.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.ui.UI;
 import com.pixbits.lib.functional.StreamException;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.ui.UIUtils;
 import com.pixbits.lib.util.ShutdownManager;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 
-
-/**
- * Hello world!
- *
- */
 public class App 
 {
   static ShutdownManager shutdown;
@@ -71,29 +71,73 @@ public class App
     shutdown.addTask(() -> { try { exif.dispose(); } catch (Exception e) { } });
 
     //System.setProperty("exiftool.debug", "true");
-       
+    
+    /*try
+    {
+      PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Norvegia '18/A7"), false);
+      folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
+      folder.sort();
+
+      System.out.printf("Found %d photos\n", folder.size());
+      
+      final Map<String,Map<String,Integer>> focals = new HashMap<>();
+      
+      AtomicInteger counter = new AtomicInteger();
+      
+      folder.forEach(StreamException.rethrowConsumer(photo -> {
+        exif.asyncFetch(photo, (p, er) -> {
+          String model = er.get(StandardTag.MODEL).toString();
+          String lens = er.get(StandardTag.LENS_MODEL).toString();
+          String focal = er.get(StandardTag.FOCAL_LENGTH).toString();
+          
+          System.out.println(counter.getAndIncrement()+" of "+folder.size()+": "+model+", "+p.path().toString());
+          
+          if (model.equals("ILCE-7RM3"))
+          {            
+            Map<String, Integer> focalsByLens = focals.computeIfAbsent(lens, l -> new TreeMap<>());
+            focalsByLens.compute(focal, (f, o) -> o == null ? 1 : (o+1));
+          }
+        }, StandardTag.FOCAL_LENGTH, StandardTag.MODEL, StandardTag.LENS_MODEL);
+      }));
+      
+      while (counter.get() < 1585);
+
+      focals.forEach((lens, focalsByLens) -> {
+        System.out.println("Lens "+lens);
+        focalsByLens.forEach((focal, count) -> System.out.println(focal+", "+count));
+      });
+      
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }
+    
+    if (true)
+      return;*/
+    
     try
     {      
       /*Coordinate c1 = new Coordinate(50.0359, -5.4253);
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      //PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/Data/Photos/Organized/Vacanze/Normandia '17"));
+      //PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Normandia '17"));
       PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
 
       
       folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
       folder.sort();
-      
+            
       UI.init(folder);
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         exif.asyncFetch(photo, (p, er) -> {
-          Coordinate coord = Coordinate.parse(er);
-          p.coordinate(Coordinate.parse(er));
+          Coordinate coord = Exif.parseGpxTags(er);
+          p.coordinate(coord);
           if (coord.isValid())
           {
-            UI.map.addMarker(coord);
+            //TODO: UI.map.addMarker(coord);
           }
           UI.photoTable.refreshData();
             
@@ -104,7 +148,7 @@ public class App
       {
         exif.waitUntilFinished();
         
-        GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
+        /*GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
         
         folder.forEach(p -> {
           if (p.coordinate() != null && !p.coordinate().isUnknown())
@@ -117,7 +161,7 @@ public class App
               }
             });
           }
-        });
+        });*/
       }
 
       /*if (true)

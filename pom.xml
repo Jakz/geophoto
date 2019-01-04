@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jdk.version>1.8</jdk.version>
+    <jdk.version>10</jdk.version>
     <xjc.version>2.3</xjc.version>
     <jxmaps.version>1.2.2</jxmaps.version>
   </properties>
@@ -157,20 +157,15 @@
       <artifactId>javase</artifactId>
       <version>3.3.0</version>
     </dependency>
-    <dependency>
-      <groupId>java</groupId>
-      <artifactId>json</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.teamdev</groupId>
-      <artifactId>jxmaps</artifactId>
-      <version>1.2.2</version>
-    </dependency>
-    <dependency>
-      <groupId>com.teamdev</groupId>
-      <artifactId>jxmaps-mac</artifactId>
-      <version>1.2.2</version>
-    </dependency>
+  	<dependency>
+  		<groupId>com.pixbits</groupId>
+  		<artifactId>lib</artifactId>
+  		<version>0.1</version>
+  	</dependency>
+		<dependency>
+			<groupId>org.jxmapviewer</groupId>
+			<artifactId>jxmapviewer2</artifactId>
+			<version>2.4</version>
+		</dependency>
   </dependencies>
 </project>

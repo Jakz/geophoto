@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 
-import com.github.jakz.geophoto.data.Coordinate;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
@@ -67,11 +67,30 @@ public class Exif<T extends Exifable>
   {
     asyncFetch(photo, process.andThen(after), tags);
   }
- 
+  
+  public static Coordinate parseGpxTags(ExifResult v)
+  {
+    if (!v.has(StandardTag.GPS_LATITUDE) || !v.has(StandardTag.GPS_LONGITUDE))
+      return new Coordinate(Double.NaN, Double.NaN);
+    else
+    {
+      if (v.has(StandardTag.GPS_ALTITUDE))
+        return new Coordinate(
+            v.get(StandardTag.GPS_LATITUDE),
+            v.get(StandardTag.GPS_LONGITUDE),
+            v.get(StandardTag.GPS_ALTITUDE)
+        );
+      else
+        return new Coordinate(
+            v.get(StandardTag.GPS_LATITUDE),
+            v.get(StandardTag.GPS_LONGITUDE)
+        );             
+    }
+  }
   public Coordinate loadCoordinate(T photo) throws IOException
   {
     ExifFetchTask<T> task = new ExifFetchTask<>(photo, this, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
-    DerivedTask<ExifResult, Coordinate> dtask = new DerivedTask<>(task, v -> Coordinate.parse(v));
+    DerivedTask<ExifResult, Coordinate> dtask = new DerivedTask<>(task, v -> parseGpxTags(v));
     Future<Coordinate> coord = asyncFetch(dtask);
     
     try

@@ -1,7 +1,7 @@
 package com.github.jakz.geophoto.reverse;
 
-import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Geocode;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 
 public interface GeocodeReverser
 {

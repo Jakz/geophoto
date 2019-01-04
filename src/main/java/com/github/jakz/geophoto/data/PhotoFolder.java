@@ -15,7 +15,7 @@ import com.pixbits.lib.io.FolderScanner;
 
 public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
 {
-  static final FolderScanner scanner = new FolderScanner("glob:*.{JPG,jpg}", null, true);
+  private final FolderScanner scanner;
   
   private Path path;
   private List<PhotoFolder> subFolders;
@@ -34,6 +34,8 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
     
     this.subFolders = new ArrayList<PhotoFolder>();
     this.photos = new ArrayList<Photo>();
+    
+    this.scanner = new FolderScanner("glob:*.{JPG,jpg}", null, recursive);
   }
   
   public PhotoFolder(Path path) throws NoSuchFileException

@@ -11,16 +11,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import com.github.jakz.geophoto.ui.renderers.DateTimeRenderer;
-import com.github.jakz.geophoto.ui.renderers.DistanceRenderer;
 import com.github.jakz.geophoto.ui.renderers.GeographicCoordRenderer;
 import com.github.jakz.geophoto.ui.renderers.SpeedRenderer;
-import com.github.jakz.geophoto.ui.renderers.TimeIntervalRenderer;
 import com.pixbits.lib.io.xml.gpx.GpxTrackSegment;
 import com.pixbits.lib.io.xml.gpx.GpxWaypoint;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.DataSource;
 import com.pixbits.lib.ui.table.TableModel;
+import com.pixbits.lib.ui.table.renderers.DateTimeRenderer;
+import com.pixbits.lib.ui.table.renderers.DistanceRenderer;
+import com.pixbits.lib.ui.table.renderers.TimeIntervalRenderer;
 import com.pixbits.lib.util.TimeInterval;
 
 public class TrackSegmentTable extends JPanel

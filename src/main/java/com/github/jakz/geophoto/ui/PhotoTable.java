@@ -17,12 +17,12 @@ import javax.swing.table.TableCellRenderer;
 
 import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.cache.ThumbnailSize;
-import com.github.jakz.geophoto.data.Coordinate;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.geocode.City;
 import com.github.jakz.geophoto.data.geocode.Country;
 import com.pixbits.lib.functional.StreamException;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.ui.table.ColumnSpec;
 import com.pixbits.lib.ui.table.TableModel;
 

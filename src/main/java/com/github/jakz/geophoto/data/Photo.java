@@ -8,6 +8,7 @@ import com.github.jakz.geophoto.cache.ThumbnailSet;
 import com.github.jakz.geophoto.reverse.GeocodeReverser;
 import com.github.jakz.geophoto.tools.Exifable;
 import com.github.jakz.geophoto.ui.MarkerSource;
+import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.lang.Size;
 
 public class Photo implements Comparable<Photo>, MarkerSource, Exifable

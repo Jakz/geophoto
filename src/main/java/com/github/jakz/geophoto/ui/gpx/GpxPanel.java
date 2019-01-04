@@ -15,7 +15,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import com.github.jakz.geophoto.ui.UI;
-import com.github.jakz.geophoto.ui.map.GpsTrackLine;
 import com.pixbits.lib.io.xml.gpx.Gpx;
 import com.pixbits.lib.io.xml.gpx.GpxTrackSegment;
 
@@ -66,7 +65,7 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
   public void valueChanged(TreeSelectionEvent e)
   {
     TreePath[] paths = trackTree.getSelectionPaths();
-    UI.mapCache.hideAll();
+    //TODO UI.mapCache.hideAll();
 
     Arrays.stream(paths).forEach(path -> {
       Object object = path.getLastPathComponent();
@@ -81,10 +80,11 @@ public class GpxPanel extends JPanel implements TreeSelectionListener
         else
           segmentTable.clearSegment();
         
-        GpsTrackLine line = UI.mapCache.getOrBuild(GpsTrackLine.class, segment);
+        //TODO: reenable with new map management
+        /*GpsTrackLine line = UI.mapCache.getOrBuild(GpsTrackLine.class, segment);
         line.setSegment(segment);
         line.centerAndFit();
-        line.show();
+        line.show();*/
       }
     });
   }

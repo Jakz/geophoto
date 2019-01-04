@@ -38,7 +38,7 @@ public class GpxTrackSegmentTreeNode implements TreeNode
   public boolean isLeaf() { return true; }
 
   @Override
-  public Enumeration<?> children() { return null; }
+  public Enumeration<? extends TreeNode> children() { return null; }
   
   @Override
   public boolean equals(Object object)
