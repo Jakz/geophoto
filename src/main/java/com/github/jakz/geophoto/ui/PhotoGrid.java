@@ -31,7 +31,7 @@ import com.pixbits.lib.functional.TriConsumer;
 import com.pixbits.lib.lang.Pair;
 import com.pixbits.lib.ui.table.ListModel;
 
-public class PhotoGrid extends JPanel
+public class PhotoGrid extends JPanel implements MultiPhotoView
 {
   private final Mediator mediator;
   
@@ -97,14 +97,19 @@ public class PhotoGrid extends JPanel
         setHorizontalTextPosition(SwingConstants.CENTER);
         
         if (value.first != null)
+        {
           setIcon(new ImageIcon(value.first.image()));
+          setText("");
+        } 
         else 
+        {
           setIcon(null);
+          setText(photo.path().getFileName().toString());
+        }
         
         if (value.second)
           mediator.ui().statusBar().taskAdd();
         
-        setText(photo.path().getFileName().toString());
       } 
       catch (IM4JavaException | InterruptedException | IOException e) 
       {
@@ -117,11 +122,24 @@ public class PhotoGrid extends JPanel
     }
   };
   
+  @Override
+  public void setPhotos(PhotoEnumeration photos)
+  {
+    model.setData(photos);
+    list.clearSelection();
+    refreshData();
+  }
+  
+  @Override
+  public void selectPhoto(Photo photo)
+  {
+    // TODO Auto-generated method stub
+    
+  }
   
   public void refreshData()
   {
     list.repaint();
     //model.fireTableDataChanged();
   }
-  
 }

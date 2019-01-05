@@ -42,6 +42,8 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
     this(path, true);
   }
   
+  public List<Photo> photos() { return photos; }
+  
   public void add(Photo photo)
   {
     photos.add(photo);

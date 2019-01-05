@@ -18,31 +18,38 @@ public class StatusBar extends JPanel
     progress = new JProgressBar();
     progress.setMaximum(100);
     progress.setMinimum(0);
+    progress.setVisible(false);
     
     setLayout(new FlowLayout(FlowLayout.RIGHT));
     add(progress);
     
     totalTasks = new AtomicInteger();
     doneTasks = new AtomicInteger();
+    
+    
   }
   
   public void updateProgressForTasks()
   {
     int value = (int)((doneTasks.get() / (float)totalTasks.get())*100);
     progress.setValue(value);
-    System.out.println(doneTasks.get()+" "+totalTasks.get());
+    //System.out.println(doneTasks.get()+" "+totalTasks.get());
   }
   
   public void taskAdd()
   {
     totalTasks.incrementAndGet();
     updateProgressForTasks();
+    progress.setVisible(true);
   }
   
   public void taskDone()
   {
     doneTasks.incrementAndGet();
     updateProgressForTasks();
+    
+    if (doneTasks.get() == totalTasks.get())
+      progress.setVisible(false);
   }
   
 }

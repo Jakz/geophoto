@@ -167,6 +167,14 @@ public class PhotoList extends JPanel implements MultiPhotoView
       model.addColumn(cityColumn);  
   }
   
+  @Override
+  public void setPhotos(PhotoEnumeration photos)
+  {
+    model.setData(photos);
+    table.clearSelection();
+    refreshData();
+  }
+  
   public void refreshData()
   {
     table.repaint();

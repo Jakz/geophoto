@@ -132,6 +132,7 @@ public class App
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
       PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Islanda '17"));
+        
       //PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
 
       
