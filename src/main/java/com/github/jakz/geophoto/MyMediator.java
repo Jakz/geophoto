@@ -6,6 +6,7 @@ import com.github.jakz.geophoto.cache.ThumbnailCache;
 import com.github.jakz.geophoto.cache.db.PersistentDatabase;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.tools.Exif;
+import com.github.jakz.geophoto.tools.PhotoScanner;
 import com.github.jakz.geophoto.ui.UI;
 import com.pixbits.lib.util.ShutdownManager;
 
@@ -15,6 +16,7 @@ public class MyMediator implements Mediator
   
   PersistentDatabase database;
   ThumbnailCache thumbnailCache;
+  PhotoScanner scanner;
   Exif<Photo> exif;
   
   ShutdownManager shutdownManager;
@@ -23,6 +25,7 @@ public class MyMediator implements Mediator
   {
     database = new PersistentDatabase();
     thumbnailCache = new ThumbnailCache(5);
+    scanner = new PhotoScanner();
     exif = new Exif<>(5);
     
     ui = new UI();
@@ -55,6 +58,7 @@ public class MyMediator implements Mediator
     database.shutdown();
   }
   
+  @Override public PhotoScanner scanner() { return scanner; }
   @Override public PersistentDatabase pdatabase() { return database; }
   @Override public ThumbnailCache thumbnailCache() { return thumbnailCache; }
   

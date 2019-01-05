@@ -139,7 +139,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
         
         int dx = w/2 - iw/2;
         int dy = h/2 - ih/2;
-                
+          
         g.drawImage(image, dx, dy, dx+iw, dy+ih, 0, 0, iw, ih, null);
       }
     }

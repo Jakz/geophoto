@@ -1,8 +1,13 @@
 package com.github.jakz.geophoto;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,12 +16,14 @@ import javax.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
 
 import com.github.jakz.geophoto.data.Photo;
+import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.PhotoFolder;
 
 import com.github.jakz.geophoto.reverse.GeoReversePool;
 import com.github.jakz.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.ui.UI;
+import com.github.jakz.geophoto.ui.tree.TreeBuilder;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.ui.UIUtils;
@@ -131,16 +138,36 @@ public class App
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      PhotoFolder folder = new PhotoFolder(Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Islanda '17"));
-        
-      //PhotoFolder folder = new PhotoFolder(Paths.get("./photos"));
-
+      Path path = Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Islanda '17");
+      Set<Photo> photos = mediator.scanner().findAllPhotosInFolder(path);
       
-      folder.findAllImages().forEach(StreamException.rethrowConsumer(p -> folder.add(new Photo(p))));
+           
+      PhotoFolder folder = new PhotoFolder(path, photos);
+           
       folder.sort();
-            
+  
       UI ui = mediator.ui();
-      mediator.ui().init(folder);
+      ui.init(folder);
+      
+      
+      List<Photo> current = new ArrayList<Photo>();
+      List<PhotoEnumeration> splits = new ArrayList<>();
+      for (int i = 0; i < folder.size(); ++i)
+      {
+        if ((i % 500) == 0 && i > 0)
+        {
+          splits.add(PhotoEnumeration.of(current, "Test "+i));
+          current = new ArrayList<Photo>();
+        }
+        
+        current.add(folder.get(i));
+      }
+      
+      if (!current.isEmpty())
+        splits.add(PhotoEnumeration.of(current, "Test last"));
+
+      ui.treeView().setRoot(TreeBuilder.ofFlatList(splits));
+      
       
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         Coordinate c = mediator.pdatabase().getCoordinateForPhoto(photo);

@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -14,32 +15,17 @@ import java.util.function.Consumer;
 import com.pixbits.lib.io.FolderScanner;
 
 public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
-{
-  private final FolderScanner scanner;
+{  
+  private final Path path;
+  private final List<Photo> photos;
   
-  private Path path;
-  private List<PhotoFolder> subFolders;
-  private List<Photo> photos;
-  private boolean recursive;
-  
-  public PhotoFolder(Path path, boolean recursive) throws NoSuchFileException
+  public PhotoFolder(Path path, Collection<Photo> photos) throws NoSuchFileException
   {
     if (!Files.exists(path))
       throw new NoSuchFileException(path.toString());
     
     this.path = path;
-    this.recursive = recursive;
-
-    
-    this.subFolders = new ArrayList<>();
-    this.photos = new ArrayList<>();
-    
-    this.scanner = new FolderScanner("glob:*.{JPG,jpg}", null, recursive);
-  }
-  
-  public PhotoFolder(Path path) throws NoSuchFileException
-  {
-    this(path, true);
+    this.photos = new ArrayList<>(photos);
   }
   
   public List<Photo> photos() { return photos; }
@@ -52,13 +38,6 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
   public void sort()
   {
     Collections.sort(photos);
-    Collections.sort(subFolders);
-    subFolders.forEach(PhotoFolder::sort);
-  }
-  
-  public Set<Path> findAllImages() throws IOException
-  {
-    return scanner.scan(path);
   }
   
   @Override
@@ -90,6 +69,8 @@ public class PhotoFolder implements PhotoEnumeration, Comparable<PhotoFolder>
   {
     return photos.indexOf(object);
   }
+  
+  @Override public String title() { return path.getFileName().toString(); }
   
   public void forEach(Consumer<? super Photo> consumer)
   {

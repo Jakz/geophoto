@@ -40,6 +40,7 @@ public class UI
     
     JSplitPane g = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeViewPanel, photoGrid);
     JPanel p = new JPanel();
+    g.setDividerLocation(0.25f);
     p.setLayout(new BorderLayout());
     p.add(g);
     
@@ -69,5 +70,6 @@ public class UI
     return photoTable;
   }
   
+  public TreeViewPanel treeView() { return treeViewPanel; }
   public StatusBar statusBar() { return statusBar; }
 }
