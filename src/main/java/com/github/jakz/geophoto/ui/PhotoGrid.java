@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.io.IOException;
 
 import javax.swing.DefaultListCellRenderer;
@@ -76,12 +79,13 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   
   class CellRenderer extends DefaultListCellRenderer
   {
+    private Image image;
+    
     CellRenderer()
     {
       setPreferredSize(new Dimension(100,100));
     }
-    
-    
+
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object v, int index, boolean isSelected, boolean cellHasFocus)
     {   
@@ -98,14 +102,16 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
         
         if (value.first != null)
         {
-          setIcon(new ImageIcon(value.first.image()));
+          //setIcon(new ImageIcon(value.first.image()));
           setText("");
         } 
         else 
         {
-          setIcon(null);
+          //setIcon(null);
           setText(photo.path().getFileName().toString());
         }
+        
+        image = value.first != null ? value.first.image() : null;
         
         if (value.second)
           mediator.ui().statusBar().taskAdd();
@@ -120,7 +126,26 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
       
       return this;
     }
+    
+    @Override
+    public void paintComponent(Graphics gx)
+    {
+      Graphics2D g = (Graphics2D)gx;
+      
+      if (image != null)
+      {
+        final int w = getWidth(), h = getHeight();
+        final int iw = image.getWidth(null), ih = image.getHeight(null);
+        
+        int dx = w/2 - iw/2;
+        int dy = h/2 - ih/2;
+                
+        g.drawImage(image, dx, dy, dx+iw, dy+ih, 0, 0, iw, ih, null);
+      }
+    }
   };
+  
+
   
   @Override
   public void setPhotos(PhotoEnumeration photos)

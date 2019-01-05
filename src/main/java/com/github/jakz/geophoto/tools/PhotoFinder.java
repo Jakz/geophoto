@@ -27,7 +27,7 @@ public class PhotoFinder
     this.scanner = new FolderScanner("glob:*.{JPG,jpg}", null, mode != Mode.NON_RECURSIVE);
   }
 
-  List<Photo> findAllPhotosInFolder(Path path)
+  List<Photo> findAllPhotosInFolder(Path path) throws NoSuchFileException
   {
     if (!Files.exists(path))
       throw new NoSuchFileException(path.toString());
