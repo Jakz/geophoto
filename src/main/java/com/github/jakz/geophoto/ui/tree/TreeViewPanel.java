@@ -1,6 +1,7 @@
 package com.github.jakz.geophoto.ui.tree;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -9,6 +10,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 import com.github.jakz.geophoto.Mediator;
+import com.github.jakz.geophoto.data.PhotoEnumeration;
+import com.github.jakz.geophoto.ui.UI;
 
 public class TreeViewPanel extends JPanel
 {
@@ -26,6 +29,7 @@ public class TreeViewPanel extends JPanel
     tree.setModel(model);
     tree.setRootVisible(false);
     tree.setCellRenderer(new TreeNodeRenderer());
+    tree.setBackground(UI.background);
     
     tree.addTreeSelectionListener(e -> {
       PhotoTreeNode node = (PhotoTreeNode)tree.getLastSelectedPathComponent();
@@ -35,6 +39,7 @@ public class TreeViewPanel extends JPanel
     
     JScrollPane scrollPane = new JScrollPane(tree);
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    scrollPane.setPreferredSize(new Dimension(200, 600));
     
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
@@ -47,6 +52,7 @@ public class TreeViewPanel extends JPanel
   
   private void nodeSelected(PhotoTreeNode node)
   {
-    
+    PhotoEnumeration enumeration = node.content();
+    mediator.ui().currentPhotoView().setPhotos(enumeration);
   }
 }

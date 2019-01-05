@@ -1,6 +1,7 @@
 package com.github.jakz.geophoto.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -67,9 +68,12 @@ public class UI
   
   public MultiPhotoView currentPhotoView() 
   { 
-    return photoTable;
+    return photoGrid;
   }
   
   public TreeViewPanel treeView() { return treeViewPanel; }
   public StatusBar statusBar() { return statusBar; }
+  
+  
+  public static Color background = new Color(214,217,223);
 }

@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -47,8 +48,10 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     
     list = new JList<>();
     list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+    list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    
     list.setCellRenderer(new CellRenderer());
-    list.setBackground(new Color(214,217,223));
+    list.setBackground(UI.background);
     model = new ListModel<Photo>(list, photos);
     
     JScrollPane scrollPane = new JScrollPane(list);
@@ -59,6 +62,8 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     list.setVisibleRowCount(-1);    
     list.setFixedCellWidth(100);
     list.setFixedCellHeight(100);
+    
+    //TODO: should support changing the data
     
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
@@ -84,6 +89,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     CellRenderer()
     {
       setPreferredSize(new Dimension(100,100));
+      setOpaque(true);
     }
 
     @Override
@@ -101,15 +107,9 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
         setHorizontalTextPosition(SwingConstants.CENTER);
         
         if (value.first != null)
-        {
-          //setIcon(new ImageIcon(value.first.image()));
           setText("");
-        } 
         else 
-        {
-          //setIcon(null);
           setText(photo.path().getFileName().toString());
-        }
         
         image = value.first != null ? value.first.image() : null;
         
@@ -150,9 +150,10 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   @Override
   public void setPhotos(PhotoEnumeration photos)
   {
-    model.setData(photos);
     list.clearSelection();
-    refreshData();
+    list.ensureIndexIsVisible(0);
+    model.setData(photos);
+    model.refresh();
   }
   
   @Override
