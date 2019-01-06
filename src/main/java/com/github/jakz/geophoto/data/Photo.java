@@ -3,6 +3,7 @@ package com.github.jakz.geophoto.data;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 import com.github.jakz.geophoto.cache.ThumbnailSet;
 import com.github.jakz.geophoto.data.attr.Attr;
@@ -71,4 +72,5 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
   public Rational exposureTime() { return attrs.get(Attr.EXPOSURE_TIME); }
   public double fnumber() { return attrs.get(Attr.FNUMBER); }
   public int focalLength() { return attrs.get(Attr.FOCAL_LENGTH); }
+  public LocalDateTime dateTimeOriginal() { return attrs.get(Attr.DATE_TIME_ORIGINAL); }
 }

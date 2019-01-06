@@ -1,4 +1,6 @@
 .DS_Store
+hs_err_pid*
+/db/
 /photos/
 /tools/
 /target/

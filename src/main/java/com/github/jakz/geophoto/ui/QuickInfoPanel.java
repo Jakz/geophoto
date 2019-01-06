@@ -1,5 +1,7 @@
 package com.github.jakz.geophoto.ui;
 
+import java.awt.Font;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 

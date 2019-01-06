@@ -156,26 +156,7 @@ public class App
       UI ui = mediator.ui();
       ui.init(mediator, folder);
       
-      
-      List<Photo> current = new ArrayList<Photo>();
-      List<PhotoEnumeration> splits = new ArrayList<>();
-      for (int i = 0; i < folder.size(); ++i)
-      {
-        if ((i % 500) == 0 && i > 0)
-        {
-          splits.add(PhotoEnumeration.of(current, "Test "+i));
-          current = new ArrayList<Photo>();
-        }
-        
-        current.add(folder.get(i));
-      }
-      
-      if (!current.isEmpty())
-        splits.add(PhotoEnumeration.of(current, "Test last"));
-
-      ui.treeView().setRoot(TreeBuilder.ofFlatList(splits));
-      
-      
+            
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         Coordinate c = mediator.pdatabase().getCoordinateForPhoto(photo);
         
@@ -205,7 +186,8 @@ public class App
       
       {
         exif.waitUntilFinished();
-        
+        ui.treeView().setRoot(TreeBuilder.byDay(folder.stream(), TreeBuilder.DateOrder.NEWEST_FIRST));
+
         /*GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
         
         folder.forEach(p -> {

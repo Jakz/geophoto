@@ -19,7 +19,7 @@ public enum Attr
   WIDTH(AttrParsers.IntParser, StandardTag.IMAGE_WIDTH),
   HEIGHT(AttrParsers.IntParser, StandardTag.IMAGE_HEIGHT),
   ORIENTATION(AttrParsers.EnumParser(Orientation.class), NonConvertedTag.of(StandardTag.ORIENTATION)),
-  DATE_DIGITALIZED(AttrParsers.DateParser, StandardTag.DATE_TIME_ORIGINAL),
+  DATE_TIME_ORIGINAL(AttrParsers.DateParser, StandardTag.DATE_TIME_ORIGINAL),
   
   COORDINATE(AttrParsers.CoordinateParser, NonConvertedTag.of(StandardTag.GPS_LATITUDE), NonConvertedTag.of(StandardTag.GPS_LONGITUDE), NonConvertedTag.of(StandardTag.GPS_ALTITUDE)),
   
