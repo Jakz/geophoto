@@ -2,6 +2,9 @@ package com.github.jakz.geophoto;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,7 +21,8 @@ import org.xml.sax.SAXException;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.PhotoFolder;
-
+import com.github.jakz.geophoto.data.attr.Attr;
+import com.github.jakz.geophoto.data.attr.AttributeSet;
 import com.github.jakz.geophoto.reverse.GeoReversePool;
 import com.github.jakz.geophoto.reverse.NominatimReverseGeocodingJAPI;
 import com.github.jakz.geophoto.tools.Exif;
@@ -28,6 +32,7 @@ import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.ui.UIUtils;
 import com.pixbits.lib.util.ShutdownManager;
+import com.thebuzzmedia.exiftool.core.NonConvertedTag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 
 public class App 
@@ -138,7 +143,9 @@ public class App
       Coordinate c2 = new Coordinate(58.3838, 3.0412);
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
-      Path path = Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Islanda '17");
+      Path path = Paths.get("photos");
+
+      //Path path = Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Islanda '17");
       Set<Photo> photos = mediator.scanner().findAllPhotosInFolder(path);
       
            
@@ -147,7 +154,7 @@ public class App
       folder.sort();
   
       UI ui = mediator.ui();
-      ui.init(folder);
+      ui.init(mediator, folder);
       
       
       List<Photo> current = new ArrayList<Photo>();
@@ -172,23 +179,25 @@ public class App
       folder.forEach(StreamException.rethrowConsumer(photo -> {
         Coordinate c = mediator.pdatabase().getCoordinateForPhoto(photo);
         
-        if (c != null)
-          photo.coordinate(c);
+        if (false && c != null)
+          photo.attrs().coordinate(c);
         else
         {
           exif.asyncFetch(photo, StreamException.rethrowBiConsumer((p, er) -> {
-            Coordinate coord = Exif.parseGpxTags(er);
-            p.coordinate(coord);
-            if (coord.isValid())
+            p.attrs().load(er);
+            
+            if (p.coordinate().isValid())
             {
-              mediator.pdatabase().setCoordinateForPhoto(photo, coord);
-              ui.map.addMarker(coord, photo);
+              mediator.pdatabase().setCoordinateForPhoto(photo, p.coordinate());
+              ui.map.addMarker(p.coordinate(), photo);
             }
             ui.photoTable.refreshData();
-              
+
+            System.out.println(p.attrs());
             
-          }), StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
+          }), Attr.tags() );
         }
+        
         
         
 

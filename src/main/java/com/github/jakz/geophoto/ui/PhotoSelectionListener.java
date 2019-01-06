@@ -2,8 +2,10 @@ package com.github.jakz.geophoto.ui;
 
 import java.util.List;
 
+import com.github.jakz.geophoto.Log;
 import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.data.Photo;
+import com.pixbits.lib.io.xml.gpx.Bounds;
 import com.pixbits.lib.ui.table.DataSource;
 import com.pixbits.lib.ui.table.ManagedListSelectionListener;
 
@@ -34,7 +36,8 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
   @Override
   protected void clearSelection()
   {
-
+    mediator.ui().map.markers().clear();
+    mediator.ui().statusBar().setText("");
   }
   
   @Override
@@ -44,21 +47,31 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
     {
       PhotoMapPanel map = mediator.ui().map;
       map.addMarker(photo.coordinate(), photo);
-      map.centerAndZoomOn(photo.coordinate());
+      map.centerAndZoomOn(new Bounds(photo.coordinate()));
       map.markers().invalidate();
     }
+    
+    mediator.ui().statusBar().setText("Selected 1 photo");
+    mediator.ui().quickInfo().updateFor(photo);
   }
   
   @Override
   protected void multipleDataSelection(List<Photo> photos)
   {
-    photos.forEach(photo -> { 
+    Log.d("ui", "selected %d photos", photos.size());
+    Bounds bounds = new Bounds();
+    photos.forEach(photo -> 
+    { 
       if (photo.coordinate().isValid())
       {
         mediator.ui().map.addMarker(photo.coordinate(), photo);
+        bounds.updateBound(photo.coordinate());
       }
     });
+    
+    mediator.ui().map.centerAndZoomOn(bounds);
     mediator.ui().map.markers().invalidate();
+    mediator.ui().statusBar().setText("Selected "+photos.size()+" photos");
   }
 
 }

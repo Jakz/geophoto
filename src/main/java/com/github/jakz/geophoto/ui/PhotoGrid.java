@@ -63,6 +63,8 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     list.setFixedCellWidth(100);
     list.setFixedCellHeight(100);
     
+    list.getSelectionModel().addListSelectionListener(new PhotoSelectionListener(mediator, photos));
+    
     //TODO: should support changing the data
     
     setLayout(new BorderLayout());
@@ -85,6 +87,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   class CellRenderer extends DefaultListCellRenderer
   {
     private Image image;
+    private boolean isSelected;
     
     CellRenderer()
     {
@@ -96,6 +99,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     public Component getListCellRendererComponent(JList<?> list, Object v, int index, boolean isSelected, boolean cellHasFocus)
     {   
       Photo photo = (Photo)v;
+      this.isSelected = isSelected;
       
       try 
       {
@@ -131,10 +135,13 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     public void paintComponent(Graphics gx)
     {
       Graphics2D g = (Graphics2D)gx;
+      final int w = getWidth(), h = getHeight();
+
+      g.setBackground(isSelected ? UI.selectedBackground : UI.background);
+      g.clearRect(2, 2, w-4, h-4);
       
       if (image != null)
       {
-        final int w = getWidth(), h = getHeight();
         final int iw = image.getWidth(null), ih = image.getHeight(null);
         
         int dx = w/2 - iw/2;

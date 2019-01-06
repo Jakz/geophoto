@@ -1,6 +1,9 @@
 package com.github.jakz.geophoto.tools;
 
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -12,6 +15,7 @@ import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.thebuzzmedia.exiftool.ExifTool;
 import com.thebuzzmedia.exiftool.ExifToolBuilder;
 import com.thebuzzmedia.exiftool.Tag;
+import com.thebuzzmedia.exiftool.core.NonConvertedTag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 import java.io.IOException;
 
@@ -23,8 +27,14 @@ public class Exif<T extends Exifable>
   
   public Exif(int poolSize)
   {
-    pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(poolSize);
-    exifTool = new ExifToolBuilder().withPath(Paths.get("./tools/exiftool").toFile()).enableStayOpen(5000).withPoolSize(poolSize).build();
+    pool = new CheckedThreadPoolExecutor(poolSize);
+   // enableDebug();
+    exifTool = new ExifToolBuilder()
+        .withPath(Paths.get("./tools/exiftool").toFile())
+        .enableStayOpen(5000)
+        .withPoolSize(poolSize)
+        .build();
+    
     counter = new AtomicLong(0L);
   }
   
@@ -50,11 +60,11 @@ public class Exif<T extends Exifable>
     while (counter.get() != 0);
   }
 
-  protected <T> Future<T> asyncFetch(Callable<T> task)
+  protected <U> Future<U> asyncFetch(Callable<U> task)
   {
     counter.incrementAndGet();
     return pool.submit(() -> {
-      T t = task.call();
+      U t = task.call();
       counter.decrementAndGet();
       return t;
     });
@@ -72,42 +82,7 @@ public class Exif<T extends Exifable>
   {
     asyncFetch(photo, process.andThen(after), tags);
   }
-  
-  public static Coordinate parseGpxTags(ExifResult v)
-  {
-    if (!v.has(StandardTag.GPS_LATITUDE) || !v.has(StandardTag.GPS_LONGITUDE))
-      return new Coordinate(Double.NaN, Double.NaN);
-    else
-    {
-      if (v.has(StandardTag.GPS_ALTITUDE))
-        return new Coordinate(
-            v.get(StandardTag.GPS_LATITUDE),
-            v.get(StandardTag.GPS_LONGITUDE),
-            v.get(StandardTag.GPS_ALTITUDE)
-        );
-      else
-        return new Coordinate(
-            v.get(StandardTag.GPS_LATITUDE),
-            v.get(StandardTag.GPS_LONGITUDE)
-        );             
-    }
-  }
-  public Coordinate loadCoordinate(T photo) throws IOException
-  {
-    ExifFetchTask<T> task = new ExifFetchTask<>(photo, this, StandardTag.GPS_LATITUDE, StandardTag.GPS_LONGITUDE, StandardTag.GPS_ALTITUDE);
-    DerivedTask<ExifResult, Coordinate> dtask = new DerivedTask<>(task, v -> parseGpxTags(v));
-    Future<Coordinate> coord = asyncFetch(dtask);
-    
-    try
-    {
-      return coord.get();
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return null;
-    }
-  }
+
   
   ExifTool getTool() { return exifTool; }
 }

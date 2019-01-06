@@ -22,6 +22,14 @@ public class PhotoTreeNode implements TreeNode
     this.content = content;
   }
   
+  public String title()
+  { 
+    if (content != null)
+      return String.format("%s (%d)", content.title(), content.size());
+    else
+      return "Unnamed";
+  }
+  
   public PhotoEnumeration content() { return content; }
   public void setChildren(List<PhotoTreeNode> children) { this.children = children; }
   

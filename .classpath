@@ -24,5 +24,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/java-json.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/exiftool"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

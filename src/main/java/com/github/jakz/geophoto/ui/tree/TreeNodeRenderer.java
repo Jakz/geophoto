@@ -14,10 +14,8 @@ public class TreeNodeRenderer extends DefaultTreeCellRenderer
     JLabel c = (JLabel)super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
     
     PhotoTreeNode node = (PhotoTreeNode)value;
-    
-    if (node.content() != null)
-      c.setText(String.format("%s (%d)", node.content().title(), node.content().size()));
-    
+    c.setText(node.title());
+
     return c;
   }
 }

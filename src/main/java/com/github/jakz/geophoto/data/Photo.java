@@ -5,6 +5,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 import com.github.jakz.geophoto.cache.ThumbnailSet;
+import com.github.jakz.geophoto.data.attr.Attr;
+import com.github.jakz.geophoto.data.attr.AttributeSet;
 import com.github.jakz.geophoto.data.geocode.Geocode;
 import com.github.jakz.geophoto.reverse.GeocodeReverser;
 import com.github.jakz.geophoto.tools.Exifable;
@@ -14,11 +16,13 @@ import com.pixbits.lib.lang.Size;
 
 public class Photo implements Comparable<Photo>, MarkerSource, Exifable
 {
+  private Path path;  
+  private final AttributeSet attrs;
+  
   private String name;
-  private Path path;
-  private Coordinate coordinate;
+
   private Geocode geocode;
-  private Size.Int size;
+  
   
   private ThumbnailSet thumbnails;
   
@@ -27,6 +31,7 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
     if (!Files.exists(path))
       throw new NoSuchFileException(path.toString());
     
+    this.attrs = new AttributeSet();
     this.path = path;
     this.name = path.getFileName().toString();
     this.thumbnails = new ThumbnailSet(this);
@@ -45,18 +50,25 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
   
   public void reverseGeoCode(GeocodeReverser reverser)
   {
-    if (coordinate.isUnknown())
+    if (attrs.coordinate().isUnknown())
       geocode = Geocode.UNKNOWN;
-    else if (coordinate != null)
-      geocode = reverser.reverse(coordinate);   
+    else if (attrs.coordinate() != null)
+      geocode = reverser.reverse(attrs.coordinate());   
   }
 
   public void geocode(Geocode geocode) { this.geocode = geocode; } 
-  public void coordinate(Coordinate coord) { this.coordinate = coord; }
   
   public Path path() { return path; }
-  public Coordinate coordinate() { return coordinate; }
+  public AttributeSet attrs() { return attrs; }
+  
   public Geocode geocode() { return geocode; }
   
   public ThumbnailSet thumbnails() { return thumbnails; }
+  
+  
+  public Coordinate coordinate() { return attrs.coordinate(); }
+  public int iso() { return attrs.get(Attr.ISO); }
+  public Rational exposureTime() { return attrs.get(Attr.EXPOSURE_TIME); }
+  public double fnumber() { return attrs.get(Attr.FNUMBER); }
+  public int focalLength() { return attrs.get(Attr.FOCAL_LENGTH); }
 }

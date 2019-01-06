@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import com.github.jakz.geophoto.App;
+import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.PhotoFolder;
 import com.github.jakz.geophoto.ui.gpx.GpxPanel;
@@ -24,11 +25,14 @@ public class UI
   public PhotoMapPanel map;
   
   private TreeViewPanel treeViewPanel;
+  private QuickInfoPanel quickInfoPanel;
   private StatusBar statusBar;
   
-  public void init(PhotoFolder folder)
+  public void init(Mediator mediator, PhotoFolder folder)
   {
-    statusBar = new StatusBar();
+    quickInfoPanel = new QuickInfoPanel();
+    statusBar = new StatusBar(mediator);
+    
     photoTable = new PhotoList(App.mediator, folder);
     photoGrid = new PhotoGrid(App.mediator, folder);
     map = new PhotoMapPanel();
@@ -73,7 +77,9 @@ public class UI
   
   public TreeViewPanel treeView() { return treeViewPanel; }
   public StatusBar statusBar() { return statusBar; }
+  public QuickInfoPanel quickInfo() { return quickInfoPanel; }
   
   
   public static Color background = new Color(214,217,223);
+  public static Color selectedBackground = new Color(57,105,138);
 }

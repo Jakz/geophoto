@@ -26,8 +26,8 @@ public class PhotoMapPanel extends MapPanel
   
   public MarkerPainter<Photo> markers() { return markerPainter; }
   
-  public void centerAndZoomOn(Coordinate coord)
+  public void centerAndZoomOn(Bounds bounds)
   {
-    this.zoomToFit(new Bounds(coord), 0.7f);
+    this.zoomToFit(bounds, 0.3f);
   }
 }
