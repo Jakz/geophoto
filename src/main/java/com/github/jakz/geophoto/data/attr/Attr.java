@@ -1,8 +1,10 @@
 package com.github.jakz.geophoto.data.attr;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.github.jakz.geophoto.data.tags.ExposureProgram;
@@ -15,8 +17,8 @@ import com.thebuzzmedia.exiftool.core.StandardTag;
 
 public enum Attr
 {
-  WIDTH(AttrParsers.IntParser, StandardTag.IMAGE_WIDTH),
-  HEIGHT(AttrParsers.IntParser, StandardTag.IMAGE_HEIGHT),
+  WIDTH(AttrParsers.IntParser, AttrWriters.IntWriter, AttrWriters.IntReader, StandardTag.IMAGE_WIDTH),
+  HEIGHT(AttrParsers.IntParser, AttrWriters.IntWriter, AttrWriters.IntReader, StandardTag.IMAGE_HEIGHT),
   ORIENTATION(AttrParsers.EnumParser(Orientation.class), NonConvertedTag.of(StandardTag.ORIENTATION)),
   IMAGE_DESCRIPTION(AttrParsers.StringParser, Tags.ImageDescription),
   DATE_TIME_ORIGINAL(AttrParsers.DateParser, StandardTag.DATE_TIME_ORIGINAL),
@@ -45,10 +47,23 @@ public enum Attr
   private final Tag[] tags;
   private Function<String[], ?> parser;
   
-  private Attr(Function<String[], ?> parser, Tag... tags)
+  private final Function<?, byte[]> writer;
+  private final Function<byte[], ?> reader;
+  
+  private Attr(Function<String[], ?> parser, Function<?, byte[]> writer, Function<byte[], ?> reader, Tag... tags)
   {
     this.tags = tags;
     this.parser = parser;
+  }
+  
+  public byte[] toBytes(Object value)
+  {
+    return writer.apply(value);
+  }
+  
+  public Object fromBytes(byte[] buffer)
+  {
+    return reader.apply(buffer);
   }
   
   public Object parse(ExifResult result)

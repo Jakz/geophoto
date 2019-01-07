@@ -17,6 +17,7 @@ import org.iq80.leveldb.Options;
 import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.cache.ThumbSize;
 import com.github.jakz.geophoto.data.Photo;
+import com.github.jakz.geophoto.data.attr.Attr;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.log.LogBuffer.Entry;
 
@@ -32,6 +33,12 @@ public class PersistentDatabase
     static byte[] coordinateKey(Photo photo)
     {
       return new StringBuilder().append(photo.path().toAbsolutePath().toString()).append("-coord").toString().getBytes();
+    }
+    
+    static byte[] attributeKey(Photo photo, Attr attr)
+    {
+      return new StringBuilder().append(photo.path().toAbsolutePath().toString()).append("-").append(attr.name()) .toString().getBytes();
+
     }
   }
   
@@ -76,6 +83,11 @@ public class PersistentDatabase
     byte[] data = baos.toByteArray();
     
     db.put(Keys.thumbnailKey(photo, size), data);
+  }
+  
+  public void setAttributeForPhoto(Photo photo, Attr attr, Object value)
+  {
+    
   }
   
   public void setCoordinateForPhoto(Photo photo, Coordinate coord) throws IOException
