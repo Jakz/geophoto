@@ -15,7 +15,7 @@ import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 
 import com.github.jakz.geophoto.cache.Thumbnail;
-import com.github.jakz.geophoto.cache.ThumbnailSize;
+import com.github.jakz.geophoto.cache.ThumbSize;
 import com.github.jakz.geophoto.data.Photo;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
 import com.pixbits.lib.log.LogBuffer.Entry;
@@ -24,7 +24,7 @@ public class PersistentDatabase
 {
   private static class Keys
   {
-    static byte[] thumbnailKey(Photo photo, ThumbnailSize size)
+    static byte[] thumbnailKey(Photo photo, ThumbSize size)
     {
       return new StringBuilder().append(photo.path().toAbsolutePath().toString()).append("-thumb-").append(size.name()).toString().getBytes();
     }
@@ -54,7 +54,7 @@ public class PersistentDatabase
   }
   
   
-  public Thumbnail getThumbnailForPhoto(Photo photo, ThumbnailSize size) throws IOException
+  public Thumbnail getThumbnailForPhoto(Photo photo, ThumbSize size) throws IOException
   {
     byte[] data = db.get(Keys.thumbnailKey(photo, size));
     
@@ -67,7 +67,7 @@ public class PersistentDatabase
     return null;
   }
   
-  public void setThumbnailForPhoto(Photo photo, ThumbnailSize size, Thumbnail thumbnail) throws IOException
+  public void setThumbnailForPhoto(Photo photo, ThumbSize size, Thumbnail thumbnail) throws IOException
   {
     BufferedImage image = thumbnail.image();
     ByteArrayOutputStream baos = new ByteArrayOutputStream();

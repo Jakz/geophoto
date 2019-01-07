@@ -23,16 +23,16 @@ public class ThumbnailSet
   public ThumbnailSet(Photo photo)
   {
     this.photo = photo;
-    this.thumbnails = new Thumbnail[ThumbnailSize.count()];
-    this.scheduled = new boolean[ThumbnailSize.count()];
+    this.thumbnails = new Thumbnail[ThumbSize.count()];
+    this.scheduled = new boolean[ThumbSize.count()];
   }
   
-  public Thumbnail get(ThumbnailSize size)
+  public Thumbnail get(ThumbSize size)
   {
     return thumbnails[size.ordinal()];
   }
   
-  public Pair<Thumbnail, Boolean> asyncGet(Mediator mediator, ThumbnailSize size, TriConsumer<Photo, Thumbnail, Boolean> callback) throws IM4JavaException, InterruptedException, IOException
+  public Pair<Thumbnail, Boolean> asyncGet(Mediator mediator, ThumbSize size, TriConsumer<Photo, Thumbnail, Boolean> callback) throws IM4JavaException, InterruptedException, IOException
   {
     Thumbnail thumbnail = get(size);
     
@@ -53,11 +53,11 @@ public class ThumbnailSet
       
       scheduled[size.ordinal()] = true;
       
-      mediator.thumbnailCache().getThumbnail(photo, new Size.Int(80,80), StreamException.rethrowBiConsumer((p,t) -> {
+      mediator.thumbnailCache().getThumbnail(photo, new Size.Int(size.size,size.size), StreamException.rethrowBiConsumer((p,t) -> {
         thumbnails[size.ordinal()] = t;
         scheduled[size.ordinal()] = false;
         
-        mediator.pdatabase().setThumbnailForPhoto(photo, ThumbnailSize.TINY, t);
+        mediator.pdatabase().setThumbnailForPhoto(photo, size, t);
        
         callback.accept(p, t, true);
       }));

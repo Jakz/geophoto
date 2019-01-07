@@ -27,7 +27,7 @@ import javax.swing.table.TableCellRenderer;
 import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.cache.ThumbnailSet;
-import com.github.jakz.geophoto.cache.ThumbnailSize;
+import com.github.jakz.geophoto.cache.ThumbSize;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.data.geocode.City;
@@ -86,7 +86,7 @@ public class PhotoList extends JPanel implements MultiPhotoView
        "",
        ImageIcon.class,
        StreamException.rethrowFunction(p -> { 
-         Thumbnail thumbnail = p.thumbnails().asyncGet(mediator, ThumbnailSize.TINY, thumbnailLoadedCallback).first;
+         Thumbnail thumbnail = p.thumbnails().asyncGet(mediator, ThumbSize.TINY, thumbnailLoadedCallback).first;
          return thumbnail != null ? new ImageIcon(thumbnail.image()) : null;
        })
     );

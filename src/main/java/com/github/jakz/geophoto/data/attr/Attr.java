@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import com.github.jakz.geophoto.data.Tags;
 import com.github.jakz.geophoto.data.tags.ExposureProgram;
 import com.github.jakz.geophoto.data.tags.Orientation;
 import com.github.jakz.geophoto.tools.ExifResult;
@@ -19,6 +18,7 @@ public enum Attr
   WIDTH(AttrParsers.IntParser, StandardTag.IMAGE_WIDTH),
   HEIGHT(AttrParsers.IntParser, StandardTag.IMAGE_HEIGHT),
   ORIENTATION(AttrParsers.EnumParser(Orientation.class), NonConvertedTag.of(StandardTag.ORIENTATION)),
+  IMAGE_DESCRIPTION(AttrParsers.StringParser, Tags.ImageDescription),
   DATE_TIME_ORIGINAL(AttrParsers.DateParser, StandardTag.DATE_TIME_ORIGINAL),
   
   COORDINATE(AttrParsers.CoordinateParser, NonConvertedTag.of(StandardTag.GPS_LATITUDE), NonConvertedTag.of(StandardTag.GPS_LONGITUDE), NonConvertedTag.of(StandardTag.GPS_ALTITUDE)),

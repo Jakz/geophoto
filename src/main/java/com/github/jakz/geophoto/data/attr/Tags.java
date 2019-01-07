@@ -1,11 +1,12 @@
-package com.github.jakz.geophoto.data;
+package com.github.jakz.geophoto.data.attr;
 
 import com.thebuzzmedia.exiftool.Tag;
 
 public enum Tags implements Tag
 {
   MaxApertureValue("MaxApertureValue"),
-  ImageUniqueID("ImageUniqueID")
+  ImageUniqueID("ImageUniqueID"),
+  ImageDescription("ImageDescription"),
   ;
   
   private final String name;
