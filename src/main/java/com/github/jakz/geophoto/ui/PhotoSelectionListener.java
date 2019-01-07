@@ -43,7 +43,7 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
   @Override
   protected void singleSelection(Photo photo)
   {
-    if (photo.coordinate().isValid())
+    if (photo.coordinate() != null && photo.coordinate().isValid())
     {
       PhotoMapPanel map = mediator.ui().map;
       map.addMarker(photo.coordinate(), photo);
@@ -62,7 +62,7 @@ public class PhotoSelectionListener extends ManagedListSelectionListener<Photo>
     Bounds bounds = new Bounds();
     photos.forEach(photo -> 
     { 
-      if (photo.coordinate().isValid())
+      if (photo.coordinate() != null && photo.coordinate().isValid())
       {
         mediator.ui().map.addMarker(photo.coordinate(), photo);
         bounds.updateBound(photo.coordinate());

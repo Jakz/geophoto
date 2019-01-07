@@ -17,53 +17,51 @@ import com.thebuzzmedia.exiftool.core.StandardTag;
 
 public enum Attr
 {
-  WIDTH(AttrParsers.IntParser, AttrWriters.IntWriter, AttrWriters.IntReader, StandardTag.IMAGE_WIDTH),
-  HEIGHT(AttrParsers.IntParser, AttrWriters.IntWriter, AttrWriters.IntReader, StandardTag.IMAGE_HEIGHT),
-  ORIENTATION(AttrParsers.EnumParser(Orientation.class), NonConvertedTag.of(StandardTag.ORIENTATION)),
-  IMAGE_DESCRIPTION(AttrParsers.StringParser, Tags.ImageDescription),
-  DATE_TIME_ORIGINAL(AttrParsers.DateParser, StandardTag.DATE_TIME_ORIGINAL),
+  WIDTH(new AttrHandler.IntHandler(), StandardTag.IMAGE_WIDTH),
+  HEIGHT(new AttrHandler.IntHandler(), StandardTag.IMAGE_HEIGHT),
+  ORIENTATION(new AttrHandler.EnumHandler<>(Orientation.class), NonConvertedTag.of(StandardTag.ORIENTATION)),
+  IMAGE_DESCRIPTION(new AttrHandler.StringHandler(), Tags.ImageDescription),
+  DATE_TIME_ORIGINAL(new AttrHandler.DateHandler(), StandardTag.DATE_TIME_ORIGINAL),
   
-  COORDINATE(AttrParsers.CoordinateParser, NonConvertedTag.of(StandardTag.GPS_LATITUDE), NonConvertedTag.of(StandardTag.GPS_LONGITUDE), NonConvertedTag.of(StandardTag.GPS_ALTITUDE)),
+  COORDINATE(new AttrHandler.CoordinateHandler(), NonConvertedTag.of(StandardTag.GPS_LATITUDE), NonConvertedTag.of(StandardTag.GPS_LONGITUDE), NonConvertedTag.of(StandardTag.GPS_ALTITUDE)),
   
-  ISO(AttrParsers.IntParser, StandardTag.ISO),
-  EXPOSURE_TIME(AttrParsers.RationalParser, StandardTag.EXPOSURE_TIME),
-  SHUTTER_SPEED(AttrParsers.RationalParser, StandardTag.SHUTTER_SPEED),
-  FOCAL_LENGTH(AttrParsers.IntParser, NonConvertedTag.of(StandardTag.FOCAL_LENGTH)),
-  FOCAL_LENGTH_35MM(AttrParsers.IntParser, NonConvertedTag.of(StandardTag.FOCAL_LENGTH_35MM)),
+  ISO(new AttrHandler.IntHandler(), StandardTag.ISO),
+  EXPOSURE_TIME(new AttrHandler.RationalHandler(), StandardTag.EXPOSURE_TIME),
+  SHUTTER_SPEED(new AttrHandler.RationalHandler(), StandardTag.SHUTTER_SPEED),
+  FOCAL_LENGTH(new AttrHandler.IntHandler(), NonConvertedTag.of(StandardTag.FOCAL_LENGTH)),
+  FOCAL_LENGTH_35MM(new AttrHandler.IntHandler(), NonConvertedTag.of(StandardTag.FOCAL_LENGTH_35MM)),
 
-  APERTURE(AttrParsers.DoubleParser, StandardTag.APERTURE),
-  MAX_APERTURE(AttrParsers.DoubleParser, Tags.MaxApertureValue),
-  FNUMBER(AttrParsers.DoubleParser, StandardTag.FNUMBER),
-  EXPOSURE_PROGRAM(AttrParsers.EnumParser(ExposureProgram.class), NonConvertedTag.of(StandardTag.EXPOSURE_PROGRAM)),
+  APERTURE(new AttrHandler.DoubleHandler(), StandardTag.APERTURE),
+  MAX_APERTURE(new AttrHandler.DoubleHandler(), Tags.MaxApertureValue),
+  FNUMBER(new AttrHandler.DoubleHandler(), StandardTag.FNUMBER),
+  EXPOSURE_PROGRAM(new AttrHandler.EnumHandler<>(ExposureProgram.class), NonConvertedTag.of(StandardTag.EXPOSURE_PROGRAM)),
   
-  CAMERA_MAKER(AttrParsers.StringParser, StandardTag.MAKE),
-  CAMERA_MODEL(AttrParsers.StringParser, StandardTag.MODEL),
-  LENS_MAKER(AttrParsers.StringParser, StandardTag.LENS_MAKE),
-  LENS_MODEL(AttrParsers.StringParser, StandardTag.LENS_MODEL),
+  CAMERA_MAKER(new AttrHandler.StringHandler(), StandardTag.MAKE),
+  CAMERA_MODEL(new AttrHandler.StringHandler(), StandardTag.MODEL),
+  LENS_MAKER(new AttrHandler.StringHandler(), StandardTag.LENS_MAKE),
+  LENS_MODEL(new AttrHandler.StringHandler(), StandardTag.LENS_MODEL),
   
-  UNIQUE_ID(AttrParsers.StringParser, Tags.ImageUniqueID)
+  UNIQUE_ID(new AttrHandler.StringHandler(), Tags.ImageUniqueID)
   ;
   
   private final Tag[] tags;
-  private Function<String[], ?> parser;
+  private AttrHandler<?> handler;
+
   
-  private final Function<?, byte[]> writer;
-  private final Function<byte[], ?> reader;
-  
-  private Attr(Function<String[], ?> parser, Function<?, byte[]> writer, Function<byte[], ?> reader, Tag... tags)
+  private Attr(AttrHandler<?> handler, Tag... tags)
   {
     this.tags = tags;
-    this.parser = parser;
+    this.handler = handler;
   }
   
   public byte[] toBytes(Object value)
   {
-    return writer.apply(value);
+    return handler.toBytesGeneric(value);
   }
   
   public Object fromBytes(byte[] buffer)
   {
-    return reader.apply(buffer);
+    return handler.fromBytes(buffer);
   }
   
   public Object parse(ExifResult result)
@@ -73,7 +71,7 @@ public enum Attr
     if (stags.length == 1 && stags[0] == null)
       return null;
     else
-      return parser.apply(stags);
+      return handler.parse(stags);
   }
   
 
