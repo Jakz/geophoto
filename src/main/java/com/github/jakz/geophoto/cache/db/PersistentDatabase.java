@@ -60,6 +60,18 @@ public class PersistentDatabase
     db.close();
   }
   
+  public void setAttributeForPhoto(Photo photo, Attr attr, Object value)
+  {
+    byte[] bytes = attr.toBytes(value);
+    db.put(Keys.attributeKey(photo, attr), bytes);
+  }
+  
+  public Object getAttributeForPhoto(Photo photo, Attr attr)
+  {
+    byte[] bytes = db.get(Keys.attributeKey(photo, attr));
+    return bytes != null ? attr.fromBytes(bytes) : null;
+  }
+  
   
   public Thumbnail getThumbnailForPhoto(Photo photo, ThumbSize size) throws IOException
   {
@@ -83,22 +95,6 @@ public class PersistentDatabase
     byte[] data = baos.toByteArray();
     
     db.put(Keys.thumbnailKey(photo, size), data);
-  }
-  
-  public void setAttributeForPhoto(Photo photo, Attr attr, Object value)
-  {
-    
-  }
-  
-  public void setCoordinateForPhoto(Photo photo, Coordinate coord) throws IOException
-  {
-    db.put(Keys.coordinateKey(photo), coord.toByteArray());
-  }
-  
-  public Coordinate getCoordinateForPhoto(Photo photo)
-  {
-    byte[] data = db.get(Keys.coordinateKey(photo));
-    return data != null ? Coordinate.of(data) : null;
   }
   
   public void printStatistics(StringBuilder out)

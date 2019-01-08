@@ -4,8 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Map;
 
+import com.github.jakz.geophoto.Mediator;
 import com.github.jakz.geophoto.cache.ThumbnailSet;
+import com.github.jakz.geophoto.cache.db.PersistentDatabase;
 import com.github.jakz.geophoto.data.attr.Attr;
 import com.github.jakz.geophoto.data.attr.AttributeSet;
 import com.github.jakz.geophoto.data.geocode.Geocode;
@@ -36,6 +39,22 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
     this.path = path;
     this.name = path.getFileName().toString();
     this.thumbnails = new ThumbnailSet(this);
+  }
+
+  public void save(PersistentDatabase db)
+  {
+    for (Map.Entry<Attr, Object> attr : attrs)
+      db.setAttributeForPhoto(this, attr.getKey(), attr.getValue());
+  }
+  
+  public void load(PersistentDatabase db)
+  {
+    for (Attr attr : Attr.values())
+    {
+      Object value = db.getAttributeForPhoto(this, attr);
+      if (value != null)
+        attrs.set(attr, value);
+    }
   }
   
   @Override

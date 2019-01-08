@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -17,7 +18,7 @@ import com.thebuzzmedia.exiftool.Tag;
 import com.thebuzzmedia.exiftool.core.NonConvertedTag;
 import com.thebuzzmedia.exiftool.core.StandardTag;
 
-public class AttributeSet
+public class AttributeSet implements Iterable<Map.Entry<Attr, Object>>
 {
   private final EnumMap<Attr, Object> attrs;
   
@@ -37,6 +38,8 @@ public class AttributeSet
     for (Attr attr : Attr.values())
       set(attr, attr.parse(result));
   }
+  
+  public Iterator<Map.Entry<Attr, Object>> iterator() { return attrs.entrySet().iterator(); }
   
   public void set(Attr key, Object value) { attrs.put(key, value); }
   public <T> T get(Attr key) { return (T)attrs.get(key); }
