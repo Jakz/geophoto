@@ -156,34 +156,32 @@ public class App
       UI ui = mediator.ui();
       ui.init(mediator, folder);
       
-           /* 
-      folder.forEach(StreamException.rethrowConsumer(photo -> {
-        Coordinate c = mediator.pdatabase().getCoordinateForPhoto(photo);
-        
-        if (false && c != null)
-          photo.attrs().coordinate(c);
-        else
+           
+      folder.forEach(StreamException.rethrowConsumer(photo -> {        
+        if (!photo.load(mediator.pdatabase()))
         {
           exif.asyncFetch(photo, StreamException.rethrowBiConsumer((p, er) -> {
             p.attrs().load(er);
             
             if (p.coordinate().isValid())
             {
-              mediator.pdatabase().setCoordinateForPhoto(photo, p.coordinate());
               ui.map.addMarker(p.coordinate(), photo);
+              ui.photoTable.refreshData();
             }
-            ui.photoTable.refreshData();
+            
 
             System.out.println(p.attrs());
             
+            photo.save(mediator.pdatabase());
+            
+            //TODO: save to db
+            
           }), Attr.tags() );
         }
-        
-        
-        
-
+        else
+          System.out.println("Loaded cached data for "+photo);
       }));
-      */
+      
       {
         exif.waitUntilFinished();
         ui.treeView().setRoot(TreeBuilder.byDay(folder.stream(), TreeBuilder.DateOrder.NEWEST_FIRST));

@@ -30,9 +30,17 @@ public class QuickInfoPanel extends JPanel
   
   public void updateFor(Photo photo)
   {
-    iso.setText("ISO "+photo.iso());
-    focalLength.setText(photo.focalLength()+" mm");
-    fnumber.setText("ƒ1/"+photo.fnumber());
-    exposure.setText(""+photo.exposureTime());
+    if (photo != null)
+    {
+      iso.setText("ISO "+photo.iso());
+      focalLength.setText(photo.focalLength()+" mm");
+      fnumber.setText("ƒ1/"+photo.fnumber());
+      exposure.setText(""+photo.exposureTime());
+    }
+    else
+    {
+      JLabel[] labels = new JLabel[] { iso, focalLength, fnumber, exposure };
+      for (JLabel label : labels) label.setText("");
+    }
   }
 }

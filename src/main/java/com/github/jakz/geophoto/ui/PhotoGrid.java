@@ -213,6 +213,11 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
           g.drawImage(image, dx, dy, dx + dw, dy + dh, 0, 0, iw, ih, null);
         }
       }
+      else
+      {
+        g.setColor(Color.RED);
+        g.drawRect(margin, margin, w - margin*2, h - margin*2);
+      }
     }
   };
   

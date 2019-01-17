@@ -38,7 +38,11 @@ public class PersistentDatabase
     static byte[] attributeKey(Photo photo, Attr attr)
     {
       return new StringBuilder().append(photo.path().toAbsolutePath().toString()).append("-").append(attr.name()) .toString().getBytes();
-
+    }
+    
+    static byte[] attributeCachedKey(Photo photo)
+    {
+      return photo.path().toString().getBytes();
     }
   }
   
@@ -58,6 +62,16 @@ public class PersistentDatabase
   {
     System.out.println("Saving database..");
     db.close();
+  }
+  
+  public void markAttributesCachedForPhoto(Photo photo)
+  {
+    db.put(Keys.attributeCachedKey(photo), new byte[] { 1 });
+  }
+  
+  public boolean areAttributesCachedForPhoto(Photo photo)
+  {
+    return db.get(Keys.attributeCachedKey(photo)) != null;
   }
   
   public void setAttributeForPhoto(Photo photo, Attr attr, Object value)

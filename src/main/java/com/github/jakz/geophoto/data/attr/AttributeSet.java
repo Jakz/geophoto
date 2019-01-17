@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.github.jakz.geophoto.cache.db.PersistentDatabase;
 import com.github.jakz.geophoto.data.tags.ExposureProgram;
 import com.github.jakz.geophoto.data.tags.Orientation;
 import com.github.jakz.geophoto.tools.Exif;
@@ -38,7 +39,7 @@ public class AttributeSet implements Iterable<Map.Entry<Attr, Object>>
     for (Attr attr : Attr.values())
       set(attr, attr.parse(result));
   }
-  
+    
   public Iterator<Map.Entry<Attr, Object>> iterator() { return attrs.entrySet().iterator(); }
   
   public void set(Attr key, Object value) { attrs.put(key, value); }

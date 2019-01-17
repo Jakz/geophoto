@@ -44,17 +44,27 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
   public void save(PersistentDatabase db)
   {
     for (Map.Entry<Attr, Object> attr : attrs)
-      db.setAttributeForPhoto(this, attr.getKey(), attr.getValue());
+      if (attr.getValue() != null)
+        db.setAttributeForPhoto(this, attr.getKey(), attr.getValue());
+    
+    db.markAttributesCachedForPhoto(this);
   }
   
-  public void load(PersistentDatabase db)
+  public boolean load(PersistentDatabase db)
   {
-    for (Attr attr : Attr.values())
-    {
-      Object value = db.getAttributeForPhoto(this, attr);
-      if (value != null)
-        attrs.set(attr, value);
+    if (db.areAttributesCachedForPhoto(this))
+    {    
+      for (Attr attr : Attr.values())
+      {
+        Object value = db.getAttributeForPhoto(this, attr);
+        if (value != null)
+          attrs.set(attr, value);
+      }
+      
+      return true;
     }
+    else
+      return false;
   }
   
   @Override
@@ -87,9 +97,9 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
   
   
   public Coordinate coordinate() { return attrs.coordinate(); }
-  public int iso() { return attrs.get(Attr.ISO); }
+  public Integer iso() { return attrs.get(Attr.ISO); }
   public Rational exposureTime() { return attrs.get(Attr.EXPOSURE_TIME); }
-  public double fnumber() { return attrs.get(Attr.FNUMBER); }
-  public int focalLength() { return attrs.get(Attr.FOCAL_LENGTH); }
+  public Double fnumber() { return attrs.get(Attr.FNUMBER); }
+  public Integer focalLength() { return attrs.get(Attr.FOCAL_LENGTH); }
   public LocalDateTime dateTimeOriginal() { return attrs.get(Attr.DATE_TIME_ORIGINAL); }
 }
