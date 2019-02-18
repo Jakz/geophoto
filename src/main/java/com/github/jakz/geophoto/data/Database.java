@@ -19,7 +19,7 @@ public class Database
     photoMap = new HashMap<>();
   }
   
-  public void addFolder(PhotoFolder folder)
+  public void addFolder(PhotoSet folder)
   {
     
   }

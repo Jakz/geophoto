@@ -88,6 +88,7 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
 
   public void geocode(Geocode geocode) { this.geocode = geocode; } 
   
+  public String filename() { return name; }
   public Path path() { return path; }
   public AttributeSet attrs() { return attrs; }
   

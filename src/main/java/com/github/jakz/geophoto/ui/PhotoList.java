@@ -9,7 +9,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -186,5 +188,11 @@ public class PhotoList extends JPanel implements MultiPhotoView
   {
     int index = photos.indexOf(photo); 
     table.setRowSelectionInterval(index, index);
+  }
+
+  @Override
+  public void filter(Optional<Predicate<Photo>> filter)
+  {
+    // TODO Auto-generated method stub
   }
 }

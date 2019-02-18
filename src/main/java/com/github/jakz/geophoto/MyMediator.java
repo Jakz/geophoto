@@ -5,9 +5,11 @@ import java.io.IOException;
 import com.github.jakz.geophoto.cache.ThumbnailCache;
 import com.github.jakz.geophoto.cache.db.PersistentDatabase;
 import com.github.jakz.geophoto.data.Photo;
+import com.github.jakz.geophoto.data.PhotoSearcher;
 import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.tools.PhotoScanner;
 import com.github.jakz.geophoto.ui.UI;
+import com.pixbits.lib.searcher.Searcher;
 import com.pixbits.lib.util.ShutdownManager;
 
 public class MyMediator implements Mediator
@@ -18,6 +20,7 @@ public class MyMediator implements Mediator
   ThumbnailCache thumbnailCache;
   PhotoScanner scanner;
   Exif<Photo> exif;
+  PhotoSearcher searcher;
   
   ShutdownManager shutdownManager;
   
@@ -26,7 +29,10 @@ public class MyMediator implements Mediator
     database = new PersistentDatabase();
     thumbnailCache = new ThumbnailCache(5);
     scanner = new PhotoScanner();
+    searcher = new PhotoSearcher();
+    
     exif = new Exif<>(5);
+    
     
     ui = new UI();
     
@@ -58,9 +64,12 @@ public class MyMediator implements Mediator
     database.shutdown();
   }
   
+  @Override public Searcher<Photo> searcher() { return searcher; }
   @Override public PhotoScanner scanner() { return scanner; }
+  
   @Override public PersistentDatabase pdatabase() { return database; }
   @Override public ThumbnailCache thumbnailCache() { return thumbnailCache; }
+  
   
   @Override public UI ui() { return ui; }
 }

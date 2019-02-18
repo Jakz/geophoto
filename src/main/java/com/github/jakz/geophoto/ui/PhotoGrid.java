@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.io.IOException;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -43,9 +45,11 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
 {
   private final Mediator mediator;
   
+  private final SearchField searchField;
   private final JSlider sizeSlider;
   private final JList<Photo> list;
   private final ListModel<Photo> model;
+  private final PhotoEnumeration photos;
   
   private int margin = 10;
   private ThumbSize thumbSize = ThumbSize.TINY;
@@ -54,8 +58,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   public PhotoGrid(Mediator mediator, PhotoEnumeration photos)
   {
     this.mediator = mediator;
-    
-
+    this.photos = photos;
     
     list = new JList<>();
     list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -97,8 +100,11 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
         }
     });
     
+    searchField = new SearchField(this, mediator);
+    
     JPanel topPanel = new JPanel();
     topPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+    topPanel.add(searchField);
     topPanel.add(sizeSlider);
     
     setLayout(new BorderLayout());
@@ -229,6 +235,14 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     }
   };
   
+  @Override
+  public void filter(Optional<Predicate<Photo>> filter)
+  {
+    if (filter.isPresent())
+      photos.filter(filter.get());
+    else
+      photos.clearFilter();
+  }
 
   
   @Override
