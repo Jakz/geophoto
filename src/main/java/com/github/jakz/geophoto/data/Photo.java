@@ -102,4 +102,6 @@ public class Photo implements Comparable<Photo>, MarkerSource, Exifable
   public Double fnumber() { return attrs.get(Attr.FNUMBER); }
   public Integer focalLength() { return attrs.get(Attr.FOCAL_LENGTH); }
   public LocalDateTime dateTimeOriginal() { return attrs.get(Attr.DATE_TIME_ORIGINAL); }
+  
+  public boolean isGeotagged() { return attrs.coordinate() != null && attrs.coordinate().isValid(); }
 }

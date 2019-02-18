@@ -34,6 +34,7 @@ import com.github.jakz.geophoto.cache.Thumbnail;
 import com.github.jakz.geophoto.cache.ThumbSize;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
+import com.github.jakz.geophoto.ui.resources.Icons;
 import com.pixbits.lib.functional.TriConsumer;
 import com.pixbits.lib.lang.Pair;
 import com.pixbits.lib.ui.table.ListModel;
@@ -120,6 +121,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   
   class CellRenderer extends DefaultListCellRenderer
   {
+    private Photo photo;
     private Image image;
     private boolean isSelected;
     
@@ -132,7 +134,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object v, int index, boolean isSelected, boolean cellHasFocus)
     {   
-      Photo photo = (Photo)v;
+      this.photo = (Photo)v;
       this.isSelected = isSelected;
       
       try 
@@ -190,28 +192,34 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
       {
         final int iw = image.getWidth(null), ih = image.getHeight(null);
         float ratio = iw / (float) ih;
-        
+        int dw, dh, dx, dy;
         
         if (iw > ih)
         {
-          int dw = w - (margin*2);
-          int dh = (int)((h - margin*2)/ratio);
+          dw = w - (margin*2);
+          dh = (int)((h - margin*2)/ratio);
           
-          int dx = margin;
-          int dy = margin + (h - margin*2 - dh) / 2;
+          dx = margin;
+          dy = margin + (h - margin*2 - dh) / 2;
           
-          g.drawImage(image, dx, dy, dx + dw, dy + dh, 0, 0, iw, ih, null);
         }
         else
         {
-          int dw =  (int)((w - margin*2)*ratio);
-          int dh = h - (margin*2);
+          dw =  (int)((w - margin*2)*ratio);
+          dh = h - (margin*2);
           
-          int dx = margin + (w - margin*2 - dw) / 2;
-          int dy = margin;
-          
-          g.drawImage(image, dx, dy, dx + dw, dy + dh, 0, 0, iw, ih, null);
+          dx = margin + (w - margin*2 - dw) / 2;
+          dy = margin;
         }
+        
+        g.drawImage(image, dx, dy, dx + dw, dy + dh, 0, 0, iw, ih, null);
+
+        if (photo.isGeotagged())
+        {
+          final int iconSize = 16;
+          g.drawImage(Icons.GPS_ICON, dx + dw - iconSize, dy + dh - iconSize, dx + dw, dy + dh, 0, 0, 32, 32, null);
+        }
+          
       }
       else
       {

@@ -64,6 +64,7 @@ public class PersistentDatabase
     db.close();
   }
   
+  /* TODO: write last modified date as value so that can be used to automatically refresh photos if something is changed */
   public void markAttributesCachedForPhoto(Photo photo)
   {
     db.put(Keys.attributeCachedKey(photo), new byte[] { 1 });
