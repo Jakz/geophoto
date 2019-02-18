@@ -1,9 +1,12 @@
 package com.github.jakz.geophoto.ui;
 
+import java.util.function.Predicate;
+
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.github.jakz.geophoto.Mediator;
+import com.github.jakz.geophoto.data.Photo;
 
 public class SearchField extends JPanel
 {
@@ -24,6 +27,11 @@ public class SearchField extends JPanel
   
   private void refresh()
   {
-    
+    view.filter(mediator.searcher().search(field.getText()));
   } 
+  
+  public Predicate<Photo> predicate()
+  {
+    return mediator.searcher().search(field.getText());
+  }
 }

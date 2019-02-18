@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -26,6 +27,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
@@ -39,6 +41,7 @@ import com.github.jakz.geophoto.data.PhotoEnumeration;
 import com.github.jakz.geophoto.ui.resources.Icons;
 import com.pixbits.lib.functional.TriConsumer;
 import com.pixbits.lib.lang.Pair;
+import com.pixbits.lib.ui.table.DataSource;
 import com.pixbits.lib.ui.table.ListModel;
 
 public class PhotoGrid extends JPanel implements MultiPhotoView
@@ -49,16 +52,17 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   private final JSlider sizeSlider;
   private final JList<Photo> list;
   private final ListModel<Photo> model;
-  private final PhotoEnumeration photos;
+  
+  private PhotoSelectionListener listener;
+  private PhotoEnumeration photos;
   
   private int margin = 10;
   private ThumbSize thumbSize = ThumbSize.TINY;
   private final CellRenderer renderer = new CellRenderer();
     
-  public PhotoGrid(Mediator mediator, PhotoEnumeration photos)
+  public PhotoGrid(Mediator mediator)
   {
     this.mediator = mediator;
-    this.photos = photos;
     
     list = new JList<>();
     list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -66,7 +70,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     
     list.setCellRenderer(renderer);
     list.setBackground(UI.background);
-    model = new ListModel<Photo>(list, photos);
+    model = new ListModel<>(list, DataSource.empty());
     
     JScrollPane scrollPane = new JScrollPane(list);
     //scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -76,9 +80,7 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
     list.setVisibleRowCount(-1);    
     list.setFixedCellWidth(100);
     list.setFixedCellHeight(100);
-    
-    list.getSelectionModel().addListSelectionListener(new PhotoSelectionListener(mediator, photos));
-    
+        
     //TODO: should support changing the data
     
     sizeSlider = new JSlider();
@@ -236,22 +238,31 @@ public class PhotoGrid extends JPanel implements MultiPhotoView
   };
   
   @Override
-  public void filter(Optional<Predicate<Photo>> filter)
+  public void filter(Predicate<Photo> filter)
   {
-    if (filter.isPresent())
-      photos.filter(filter.get());
-    else
-      photos.clearFilter();
+    if (photos != null)
+    {
+      photos.filter(filter);
+      model.refresh();
+    }
   }
 
   
   @Override
   public void setPhotos(PhotoEnumeration photos)
   {
+    this.photos = photos;   
+    
+    photos.filter(searchField.predicate());
     list.clearSelection();
     list.ensureIndexIsVisible(0);
     model.setData(photos);
     model.refresh();
+    
+
+    list.getSelectionModel().removeListSelectionListener(listener);
+    this.listener = new PhotoSelectionListener(mediator, photos);
+    list.getSelectionModel().addListSelectionListener(listener);
   }
   
   @Override

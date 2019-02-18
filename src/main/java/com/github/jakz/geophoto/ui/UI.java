@@ -34,7 +34,8 @@ public class UI
     statusBar = new StatusBar(mediator);
     
     photoTable = new PhotoList(App.mediator, folder);
-    photoGrid = new PhotoGrid(App.mediator, folder);
+    photoGrid = new PhotoGrid(App.mediator);
+    photoGrid.setPhotos(folder);
     map = new PhotoMapPanel();
     gpxPanel = new GpxPanel();
     treeViewPanel = new TreeViewPanel(App.mediator);

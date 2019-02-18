@@ -11,5 +11,5 @@ public interface MultiPhotoView
   public void selectPhoto(Photo photo);
   public void setPhotos(PhotoEnumeration photos);
   
-  public void filter(Optional<Predicate<Photo>> filter);
+  public void filter(Predicate<Photo> filter);
 }

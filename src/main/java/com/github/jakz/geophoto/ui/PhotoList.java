@@ -191,7 +191,7 @@ public class PhotoList extends JPanel implements MultiPhotoView
   }
 
   @Override
-  public void filter(Optional<Predicate<Photo>> filter)
+  public void filter(Predicate<Photo> filter)
   {
     // TODO Auto-generated method stub
   }
