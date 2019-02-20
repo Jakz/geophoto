@@ -1,23 +1,11 @@
 package com.github.jakz.geophoto.data.attr;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Function;
 
-import com.github.jakz.geophoto.cache.db.PersistentDatabase;
-import com.github.jakz.geophoto.data.tags.ExposureProgram;
-import com.github.jakz.geophoto.data.tags.Orientation;
-import com.github.jakz.geophoto.tools.Exif;
 import com.github.jakz.geophoto.tools.ExifResult;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
-import com.thebuzzmedia.exiftool.Tag;
-import com.thebuzzmedia.exiftool.core.NonConvertedTag;
-import com.thebuzzmedia.exiftool.core.StandardTag;
 
 public class AttributeSet implements Iterable<Map.Entry<Attr, Object>>
 {
@@ -43,7 +31,7 @@ public class AttributeSet implements Iterable<Map.Entry<Attr, Object>>
   public Iterator<Map.Entry<Attr, Object>> iterator() { return attrs.entrySet().iterator(); }
   
   public void set(Attr key, Object value) { attrs.put(key, value); }
-  public <T> T get(Attr key) { return (T)attrs.get(key); }
+  @SuppressWarnings("unchecked") public <T> T get(Attr key) { return (T)attrs.get(key); }
   
   public void coordinate(Coordinate coordinate) { set(Attr.COORDINATE, coordinate); }
   

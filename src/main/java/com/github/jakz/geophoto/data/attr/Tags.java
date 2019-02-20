@@ -7,6 +7,9 @@ public enum Tags implements Tag
   MaxApertureValue("MaxApertureValue"),
   ImageUniqueID("ImageUniqueID"),
   ImageDescription("ImageDescription"),
+  
+  LocationCountry("Country-PrimaryLocationName"),
+  LocationCity("City")
   ;
   
   private final String name;

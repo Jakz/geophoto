@@ -41,7 +41,10 @@ public enum Attr
   LENS_MAKER(new AttrHandler.StringHandler(), StandardTag.LENS_MAKE),
   LENS_MODEL(new AttrHandler.StringHandler(), StandardTag.LENS_MODEL),
   
-  UNIQUE_ID(new AttrHandler.StringHandler(), Tags.ImageUniqueID)
+  UNIQUE_ID(new AttrHandler.StringHandler(), Tags.ImageUniqueID),
+  
+  LOCATION_COUNTRY(new AttrHandler.StringHandler(), Tags.LocationCountry),
+  LOCATION_CITY(new AttrHandler.StringHandler(), Tags.LocationCity),
   ;
   
   private final Tag[] tags;

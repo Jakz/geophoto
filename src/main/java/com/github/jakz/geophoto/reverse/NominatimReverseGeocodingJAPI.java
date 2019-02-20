@@ -174,7 +174,7 @@ public class NominatimReverseGeocodingJAPI implements GeocodeReverser
   {
     Address result = null;
     String urlString = NominatimInstance
-        + "/reverse?format=json&addressdetails=1&lat=" + String.valueOf(lat)
+        + "/reverse?format=jsonv2&addressdetails=1&lat=" + String.valueOf(lat)
         + "&lon=" + String.valueOf(lon) + "&zoom=" + zoomLevel
         + "&accept-language=" + locale;
     try
