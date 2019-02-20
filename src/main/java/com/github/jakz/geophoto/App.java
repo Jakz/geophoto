@@ -144,7 +144,7 @@ public class App
       System.out.printf("Distance: %f, %f\n", c1.haversineDistance(c2), c1.cosineDistance(c2));*/
       
       Path path = Paths.get("photos");
-
+      //Path path = Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Norvegia '18/A7");
       //Path path = Paths.get("/Volumes/OSX Dump/Photos/Vacanze/Islanda '17");
       Set<Photo> photos = mediator.scanner().findAllPhotosInFolder(path);
       
@@ -182,11 +182,13 @@ public class App
           System.out.println("Loaded cached data for "+photo);
       }));
       
+      
+      
       {
         exif.waitUntilFinished();
         ui.treeView().setRoot(TreeBuilder.byDay(folder.stream(), TreeBuilder.DateOrder.NEWEST_FIRST));
 
-        /*GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
+        GeoReversePool reversePool = new GeoReversePool(new NominatimReverseGeocodingJAPI(), 2);
         
         folder.forEach(p -> {
           if (p.coordinate() != null && !p.coordinate().isUnknown())
@@ -195,11 +197,11 @@ public class App
               if (g != null)
               {
                 ph.geocode(g);
-                UI.photoTable.refreshData();
+                System.out.println(g);
               }
             });
           }
-        });*/
+        });
       }
 
       /*if (true)

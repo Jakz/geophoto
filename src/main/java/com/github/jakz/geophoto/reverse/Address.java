@@ -3,6 +3,7 @@ package com.github.jakz.geophoto.reverse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+//TODO: update to V2 https://wiki.openstreetmap.org/wiki/Nominatim#Example_with_format.3Djsonv2
 public class Address {
 	private int lod = -1;
 	private long osm_id = -1;

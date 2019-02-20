@@ -32,7 +32,7 @@ public class TreeViewPanel extends JPanel
     tree.setBackground(UI.background);
     
     tree.addTreeSelectionListener(e -> {
-      PhotoTreeNode node = (PhotoTreeNode)tree.getLastSelectedPathComponent();
+      PhotoTreeNode<?> node = (PhotoTreeNode<?>)tree.getLastSelectedPathComponent();
       nodeSelected(node);
     });
     
@@ -45,12 +45,12 @@ public class TreeViewPanel extends JPanel
     add(scrollPane, BorderLayout.CENTER);
   }
   
-  public void setRoot(PhotoTreeNode root)
+  public void setRoot(PhotoTreeNode<?> root)
   {
     model.setRoot(root);
   }
   
-  private void nodeSelected(PhotoTreeNode node)
+  private void nodeSelected(PhotoTreeNode<?> node)
   {
     PhotoEnumeration enumeration = node.content();
     mediator.ui().currentPhotoView().setPhotos(enumeration);

@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 import com.pixbits.lib.ui.table.FilterableListDataSource;
 
-public abstract class PhotoSet implements PhotoEnumeration
+public abstract class PhotoSet implements MutablePhotoEnumeration
 {
   protected final FilterableListDataSource<Photo> photos;
 
@@ -31,7 +31,8 @@ public abstract class PhotoSet implements PhotoEnumeration
   @Override public Photo get(int index) { return photos.get(index); }
   @Override public Iterator<Photo> iterator() { return photos.iterator(); }
   @Override public int indexOf(Photo object) { return photos.indexOf(object); }
-
+  @Override public void add(Photo photo) { photos.add(photo); }
+  
   public void forEach(Consumer<? super Photo> consumer) { photos.forEach(consumer); }
 
   @Override public void clearFilter() { photos.clearFilter(); }

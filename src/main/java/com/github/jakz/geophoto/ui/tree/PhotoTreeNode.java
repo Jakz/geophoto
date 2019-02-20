@@ -7,31 +7,23 @@ import java.util.List;
 import javax.swing.tree.TreeNode;
 
 import com.github.jakz.geophoto.data.PhotoEnumeration;
-import com.github.jakz.geophoto.data.PhotoFolder;
 
-public class PhotoTreeNode implements TreeNode
+public abstract class PhotoTreeNode<T extends PhotoTreeNode<T>> implements TreeNode
 {
   private final TreeNode parent;
-  private List<PhotoTreeNode> children;
-  private PhotoEnumeration content;
+  private List<T> children;
  
-  public PhotoTreeNode(TreeNode parent, PhotoEnumeration content, List<PhotoTreeNode> children)
+  public PhotoTreeNode(TreeNode parent, List<T> children)
   {
     this.children = children;
     this.parent = parent;
-    this.content = content;
   }
+
+  boolean hasContent() { return false; }
+  PhotoEnumeration content() { return null; }
+  abstract String title();
   
-  public String title()
-  { 
-    if (content != null)
-      return String.format("%s (%d)", content.title(), content.size());
-    else
-      return "Unnamed";
-  }
-  
-  public PhotoEnumeration content() { return content; }
-  public void setChildren(List<PhotoTreeNode> children) { this.children = children; }
+  public void setChildren(List<T> children) { this.children = children; }
   
   @Override public TreeNode getChildAt(int i) { return children.get(i); }
   @Override public int getChildCount() { return children.size(); }
@@ -42,9 +34,6 @@ public class PhotoTreeNode implements TreeNode
   @Override public boolean getAllowsChildren() { return true; }
   @Override public boolean isLeaf() { return children == null || children.isEmpty(); }
   @Override public Enumeration<? extends TreeNode> children() { return Collections.enumeration(children); }
-  
-  
-  
-  
-  public static PhotoTreeNode empty() { return new PhotoTreeNode(null, null, null); }
+
+  public static PhotoTreeNode<PhotoEnumerationNode> empty() { return new PhotoEnumerationNode(null, null, null); }
 }

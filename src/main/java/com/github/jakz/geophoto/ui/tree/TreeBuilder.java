@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
-import com.thebuzzmedia.exiftool.commons.lang.Objects;
 
 public class TreeBuilder
 {
@@ -21,14 +20,14 @@ public class TreeBuilder
     OLDEST_FIRST
   };
   
-  public static PhotoTreeNode ofFlatList(Collection<PhotoEnumeration> nodes)
+  public static PhotoTreeNode<PhotoEnumerationNode> ofFlatList(Collection<PhotoEnumeration> nodes)
   {
-    PhotoTreeNode root = new PhotoTreeNode(null, null, null);
-    root.setChildren(nodes.stream().map(e -> new PhotoTreeNode(root, e, null)).collect(Collectors.toList()));
+    PhotoEnumerationNode root = new PhotoEnumerationNode(null, null, null);
+    root.setChildren(nodes.stream().map(e -> new PhotoEnumerationNode(root, e, null)).collect(Collectors.toList()));
     return root;
   }
   
-  public static PhotoTreeNode byDay(Stream<Photo> photos, DateOrder order)
+  public static PhotoTreeNode<PhotoEnumerationNode> byDay(Stream<Photo> photos, DateOrder order)
   {
     final LocalDate unknownDate = LocalDate.of(1900, 1, 1);
     
@@ -43,10 +42,14 @@ public class TreeBuilder
     if (order == DateOrder.NEWEST_FIRST)
       sorter = sorter.reversed();
         
-    PhotoTreeNode root = new PhotoTreeNode(null, null, null);
+    PhotoEnumerationNode root = new PhotoEnumerationNode(null, null, null);
     root.setChildren(
         groups.entrySet().stream().sorted(sorter)
-          .map(e -> new PhotoTreeNode(root, PhotoEnumeration.of(e.getValue(), e.getKey() != unknownDate ? e.getKey().toString() : "Unknown"), null))
+          .map(e -> new PhotoEnumerationNode(
+              root, 
+              PhotoEnumeration.of(e.getValue(), e.getKey() != unknownDate ? e.getKey().toString() : "Unknown"),
+              null)
+          )
           .collect(Collectors.toList())
     );
     
