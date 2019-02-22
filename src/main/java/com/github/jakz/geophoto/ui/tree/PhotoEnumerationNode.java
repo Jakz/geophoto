@@ -10,7 +10,7 @@ import com.github.jakz.geophoto.data.PhotoEnumeration;
 
 public class PhotoEnumerationNode extends PhotoTreeNode<PhotoEnumerationNode>
 {
-  private PhotoEnumeration content;
+  protected PhotoEnumeration content;
 
   public PhotoEnumerationNode(TreeNode parent, PhotoEnumeration content, List<PhotoEnumerationNode> children)
   {
@@ -37,7 +37,7 @@ public class PhotoEnumerationNode extends PhotoTreeNode<PhotoEnumerationNode>
       this.content = content;
     }
     
-    private MutablePhotoEnumeration content;
+    protected MutablePhotoEnumeration content;
 
     @Override
     String title()

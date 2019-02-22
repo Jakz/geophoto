@@ -24,7 +24,7 @@ public class ImageMagick
 {
   private final ProcessExecutor pool;
   private final ConvertCmd convert;
-  private final Path TOOL_PATH = Paths.get("./tools/imagemagick/bin");
+  private final Path TOOL_PATH = Paths.get("./tools");
   
   public ImageMagick(int poolSize)
   {

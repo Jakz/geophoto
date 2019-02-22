@@ -1,5 +1,6 @@
 package com.github.jakz.geophoto;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.bind.JAXBException;
 
+import org.iq80.leveldb.DBException;
 import org.xml.sax.SAXException;
 
 import com.github.jakz.geophoto.data.Photo;
@@ -38,50 +40,39 @@ import com.thebuzzmedia.exiftool.core.StandardTag;
 public class App 
 {
   static ShutdownManager shutdown;
-  public static Mediator mediator = new MyMediator();
+  public static Mediator mediator;
+  
+  public static void checkEnvironment()
+  {
+    String[] tools = { "exiftool", "convert" };
+    
+    for (String tool : tools)
+    {
+      Path toolPath = Paths.get("./tools", tool);
+      
+      if (!Files.exists(toolPath) || !Files.isExecutable(toolPath))
+      {
+        System.err.println("Fatal Error: unable to find '"+tool+"' at '"+toolPath+"' or it's not executable, exiting..");
+        System.exit(1);
+      }
+    }
+  }
       
   public static void main( String[] args )
   {    
-    /*Gpx gpx;
-    try
-    {
-      gpx = GpxParser.parse(Paths.get("./photos/data.gpx"));         
-      GpxParser.save(gpx, Paths.get("./photos/data-out.gpx"));
-    } 
-    catch (IOException | SAXException | JAXBException e)
-    {
-      e.printStackTrace();
-    }   
-    
-    if (true)
-      return;*/
-    
-    
-
-    /*Path qr = Paths.get("/Volumes/Vicky/Photos-SSD/GPX/Cina '16/qr/10-1/P8100623.JPG");
-    try
-    {
-      byte[] data = ZXing.readQRCode(qr);
-      Path out = Paths.get("./qrcode.bin");
-      DataOutputStream dos = new DataOutputStream(Files.newOutputStream(out));
-      dos.write(data);
-      dos.close();
-    } 
-    catch (NotFoundException | IOException e1)
-    {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }
-    
-    
-    if (true)
-      return;*/
+    checkEnvironment();
     
     UIUtils.setNimbusLNF();
     
     try
     {
+      mediator = new MyMediator();
       mediator.init();
+    }
+    catch (DBException e)
+    {
+      e.printStackTrace();
+      System.exit(1);
     }
     catch (Exception e)
     {
