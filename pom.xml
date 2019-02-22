@@ -137,11 +137,11 @@
       <artifactId>commons-io</artifactId>
       <version>2.5</version>
     </dependency>
-    <dependency>
+  <!--  <dependency>
       <groupId>com.github.mjeanroy</groupId>
       <artifactId>exiftool-lib</artifactId>
       <version>2.2.1</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.im4java</groupId>
       <artifactId>im4java</artifactId>
@@ -172,5 +172,10 @@
       <artifactId>leveldbjni-osx</artifactId>
       <version>1.8</version>
     </dependency>
+    <dependency>
+        <groupId>org.openpnp</groupId>
+        <artifactId>opencv</artifactId>
+        <version>3.4.2-1</version>
+    </dependency>  
   </dependencies>
 </project>

@@ -25,6 +25,8 @@ import java.net.URLConnection;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.io.IOUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.github.jakz.geophoto.data.geocode.Geocode;
 import com.pixbits.lib.io.xml.gpx.Coordinate;
@@ -140,14 +142,8 @@ public class NominatimReverseGeocodingJAPI implements GeocodeReverser
       if (latSet && lonSet)
       {
         NominatimReverseGeocodingJAPI nominatim = new NominatimReverseGeocodingJAPI(zoom);
-        Address address = nominatim.getAddress(lat, lon);
+        Geocode address = nominatim.reverse(new Coordinate(lat, lon));
         System.out.println(address);
-        
-        if (osm)
-        {
-          System.out.print("OSM type: " + address.getOsmType() + ", OSM id: "
-              + address.getOsmId());
-        }
       } 
       else
       {
@@ -170,19 +166,26 @@ public class NominatimReverseGeocodingJAPI implements GeocodeReverser
     this.zoomLevel = zoomLevel;
   }
 
-  public Address getAddress(double lat, double lon)
+  public Geocode getGeocode(double lat, double lon) throws JSONException
   {
-    Address result = null;
+    Geocode result = null;
     String urlString = NominatimInstance
         + "/reverse?format=jsonv2&addressdetails=1&lat=" + String.valueOf(lat)
         + "&lon=" + String.valueOf(lon) + "&zoom=" + zoomLevel
         + "&accept-language=" + locale;
     try
     {
-      result = new Address(getJSON(urlString), zoomLevel);
-    } catch (IOException e)
+      String json = getJSON(urlString);
+      JSONObject object = new JSONObject(json);
+      result = new Geocode(object);
+    } 
+    catch (IOException e)
     {
       System.err.println("Can't connect to server.");
+      e.printStackTrace();
+    }
+    catch (Exception e)
+    {
       e.printStackTrace();
     }
     return result;
@@ -194,7 +197,7 @@ public class NominatimReverseGeocodingJAPI implements GeocodeReverser
     HttpsURLConnection conn = (HttpsURLConnection) obj.openConnection();
     conn.setRequestMethod("GET");
     conn.setRequestProperty("Content-Type", "application/json");
-    conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
+    conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) (jack.ngi@gmail.com) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
     
     InputStream is = conn.getInputStream();
     String json = IOUtils.toString(is, "UTF-8");
@@ -205,7 +208,14 @@ public class NominatimReverseGeocodingJAPI implements GeocodeReverser
   @Override
   public Geocode reverse(Coordinate coordinate)
   {
-    Address address = getAddress(coordinate.lat(), coordinate.lng());
-    return new Geocode(address);
+    try 
+    {
+      return getGeocode(coordinate.lat(), coordinate.lng());
+    } 
+    catch (JSONException e) 
+    {
+      e.printStackTrace();
+      return null;
+    }
   }
 }

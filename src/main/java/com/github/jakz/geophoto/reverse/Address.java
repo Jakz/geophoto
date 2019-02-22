@@ -1,5 +1,7 @@
 package com.github.jakz.geophoto.reverse;
 
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,6 +19,8 @@ public class Address {
 	private String suburb = "";
 	private String road = "";
 	private String display_name = "";
+	
+	private Map<String, String> address;
 	
 	public Address(String json, int lod){
 		try {	

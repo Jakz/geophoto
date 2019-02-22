@@ -7,17 +7,18 @@ import java.util.function.BiConsumer;
 
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.geocode.Geocode;
+import com.github.jakz.geophoto.tools.CheckedThreadPoolExecutor;
 
 public class GeoReversePool
 {
-  private final ThreadPoolExecutor pool;
+  private final CheckedThreadPoolExecutor pool;
   private final GeocodeReverser reverser;
 
   public GeoReversePool(GeocodeReverser reverser) { this(reverser, 2); }
   public GeoReversePool(GeocodeReverser reverser, int poolSize)
   {
     this.reverser = reverser;
-    pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(poolSize);
+    pool = new CheckedThreadPoolExecutor(poolSize);
   }
   
   public Future<Geocode> submit(final Photo photo)

@@ -32,7 +32,6 @@ import com.github.jakz.geophoto.cache.ThumbnailSet;
 import com.github.jakz.geophoto.cache.ThumbSize;
 import com.github.jakz.geophoto.data.Photo;
 import com.github.jakz.geophoto.data.PhotoEnumeration;
-import com.github.jakz.geophoto.data.geocode.City;
 import com.github.jakz.geophoto.data.geocode.Country;
 import com.pixbits.lib.functional.StreamException;
 import com.pixbits.lib.functional.TriConsumer;
@@ -160,10 +159,10 @@ public class PhotoList extends JPanel implements MultiPhotoView
     
     model.addColumn(countryColumn);
     
-    ColumnSpec<Photo, City> cityColumn = new ColumnSpec<>(
+    ColumnSpec<Photo, String> cityColumn = new ColumnSpec<>(
         "",
-        City.class,
-        p -> p.geocode() != null && p.geocode().city().isPresent() ? p.geocode().city().get() : null
+        String.class,
+        p -> p.geocode() != null ? p.geocode().city() : null
       );
       
       model.addColumn(cityColumn);  
